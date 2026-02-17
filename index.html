@@ -1,0 +1,3289 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Verzameling — André Bergsma</title>
+    <style>
+        :root {
+            --bg: #f8f9fa;
+            --bg-card: #ffffff;
+            --bg-code: #f1f3f5;
+            --text: #212529;
+            --text-muted: #6c757d;
+            --border: #dee2e6;
+            --accent: #4263eb;
+            --accent-light: #edf2ff;
+            --accent-hover: #3b5bdb;
+            --success: #2b8a3e;
+            --success-bg: #ebfbee;
+            --tag-cc: #7950f2;
+            --tag-cc-bg: #f3f0ff;
+            --tag-all: #1098ad;
+            --tag-all-bg: #e3fafc;
+            --shadow: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-hover: 0 4px 12px rgba(0,0,0,0.12);
+            --radius: 8px;
+            --radius-lg: 12px;
+        }
+
+        [data-theme="dark"] {
+            --bg: #1a1b1e;
+            --bg-card: #25262b;
+            --bg-code: #2c2e33;
+            --text: #e9ecef;
+            --text-muted: #909296;
+            --border: #373a40;
+            --accent: #748ffc;
+            --accent-light: #1c2340;
+            --accent-hover: #91a7ff;
+            --success: #51cf66;
+            --success-bg: #1a2e1f;
+            --tag-cc: #b197fc;
+            --tag-cc-bg: #2a1f4e;
+            --tag-all: #66d9e8;
+            --tag-all-bg: #1a3a3f;
+            --shadow: 0 1px 3px rgba(0,0,0,0.3);
+            --shadow-hover: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .header-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        /* ===== THEME TOGGLE ===== */
+        .theme-toggle {
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 0.4rem 0.75rem;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--text);
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent);
+        }
+
+        /* ===== SEARCH ===== */
+        .search-container {
+            max-width: 1100px;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            background: var(--bg-card);
+            color: var(--text);
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .search-wrapper {
+            position: relative;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            pointer-events: none;
+        }
+
+        /* ===== SITUATIE-KIEZER ===== */
+        .situation-picker {
+            max-width: 1100px;
+            margin: 0 auto 1.5rem;
+            padding: 0 1rem;
+        }
+
+        .situation-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .situation-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .situation-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 2rem;
+            background: var(--bg-card);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .situation-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .situation-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        /* ===== FRAMEWORK BANNER ===== */
+        .framework-banner {
+            max-width: 1100px;
+            margin: 0 auto 1.5rem;
+            padding: 0 1rem;
+        }
+
+        .framework-card {
+            background: var(--accent-light);
+            border: 1px solid var(--accent);
+            border-radius: var(--radius-lg);
+            padding: 1rem 1.25rem;
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .framework-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .framework-item strong {
+            color: var(--accent);
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 1rem 3rem;
+        }
+
+        /* ===== SECTION ===== */
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .section-emoji {
+            font-size: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-left: auto;
+        }
+
+        .section-description {
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        /* ===== PROMPT CARD ===== */
+        .prompt-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow);
+            transition: box-shadow 0.2s;
+        }
+
+        .prompt-card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
+        .prompt-card.hidden {
+            display: none;
+        }
+
+        .prompt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .prompt-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+        }
+
+        .prompt-when {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .tool-tag {
+            font-size: 0.75rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 1rem;
+            font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .tool-tag.cc {
+            background: var(--tag-cc-bg);
+            color: var(--tag-cc);
+        }
+
+        .tool-tag.all {
+            background: var(--tag-all-bg);
+            color: var(--tag-all);
+        }
+
+        /* ===== PROMPT TEXT BLOCK ===== */
+        .prompt-block {
+            margin-bottom: 0.75rem;
+        }
+
+        .prompt-block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.25rem;
+        }
+
+        .prompt-lang {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .copy-btn {
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 0.2rem 0.6rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .copy-btn.copied {
+            background: var(--success-bg);
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .prompt-text {
+            background: var(--bg-code);
+            border-radius: var(--radius);
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            border: 1px solid var(--border);
+        }
+
+        /* ===== COLLAPSIBLE DETAILS ===== */
+        .prompt-details {
+            margin-top: 0.75rem;
+        }
+
+        .details-toggle {
+            background: none;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            font-size: 0.85rem;
+            padding: 0.25rem 0;
+            font-weight: 500;
+        }
+
+        .details-toggle:hover {
+            text-decoration: underline;
+        }
+
+        .details-content {
+            display: none;
+            margin-top: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: var(--bg-code);
+            border-radius: var(--radius);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            border-left: 3px solid var(--accent);
+        }
+
+        .details-content.open {
+            display: block;
+        }
+
+        .details-content.fix {
+            border-left-color: #e03131;
+        }
+
+        .fix-prompt {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 0.5rem 0.75rem;
+            margin-top: 0.5rem;
+            font-style: italic;
+            position: relative;
+        }
+
+        .fix-copy-btn {
+            position: absolute;
+            top: 0.25rem;
+            right: 0.25rem;
+            background: var(--bg-code);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 0.1rem 0.4rem;
+            font-size: 0.7rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        /* ===== MAGIC PHRASES ===== */
+        .magic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .magic-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1rem;
+            box-shadow: var(--shadow);
+        }
+
+        .magic-phrase {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .magic-phrase-en {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-bottom: 0.5rem;
+        }
+
+        .magic-when {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* ===== CHAIN ===== */
+        .chain-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow);
+        }
+
+        .chain-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .chain-steps {
+            list-style: none;
+            counter-reset: chain-step;
+        }
+
+        .chain-step {
+            counter-increment: chain-step;
+            padding: 0.75rem 0;
+            padding-left: 2.5rem;
+            position: relative;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .chain-step:last-child {
+            border-bottom: none;
+        }
+
+        .chain-step::before {
+            content: counter(chain-step);
+            position: absolute;
+            left: 0;
+            top: 0.75rem;
+            width: 1.75rem;
+            height: 1.75rem;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .chain-step-prompt {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .chain-step-result {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* ===== INDUSTRY PACKS ===== */
+        .industry-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .industry-tab {
+            padding: 0.4rem 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--bg-card);
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--text);
+            transition: all 0.2s;
+        }
+
+        .industry-tab.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .industry-content {
+            display: none;
+        }
+
+        .industry-content.active {
+            display: block;
+        }
+
+        /* ===== NO RESULTS ===== */
+        .no-results {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+            display: none;
+        }
+
+        .no-results.visible {
+            display: block;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 640px) {
+            .header-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .framework-card {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .magic-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .prompt-header {
+                flex-direction: column;
+            }
+
+            .section-subtitle {
+                margin-left: 0;
+            }
+
+            .section-header {
+                flex-wrap: wrap;
+            }
+        }
+
+        /* ===== SCROLL TO TOP ===== */
+        .scroll-top {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 2.5rem;
+            height: 2.5rem;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-hover);
+            display: none;
+            z-index: 99;
+            transition: opacity 0.2s;
+        }
+
+        .scroll-top.visible {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+    <div class="header-inner">
+        <div class="header-title">Prompt Verzameling</div>
+        <div class="header-controls">
+            <button class="theme-toggle" onclick="toggleTheme()" title="Wissel licht/donker modus">
+                <span id="theme-icon">&#9789;</span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- ===== SEARCH ===== -->
+<div class="search-container">
+    <div class="search-wrapper">
+        <span class="search-icon">&#128269;</span>
+        <input type="text" class="search-input" id="searchInput" placeholder="Zoek een prompt..." oninput="handleSearch()">
+    </div>
+</div>
+
+<!-- ===== SITUATIE-KIEZER ===== -->
+<div class="situation-picker">
+    <div class="situation-label">Wat wil je doen?</div>
+    <div class="situation-buttons">
+        <button class="situation-btn active" data-category="all" onclick="filterCategory('all', this)">Alles</button>
+        <button class="situation-btn" data-category="instappen" onclick="filterCategory('instappen', this)">Ik begin met Claude Code</button>
+        <button class="situation-btn" data-category="maken" onclick="filterCategory('maken', this)">Ik wil iets maken</button>
+        <button class="situation-btn" data-category="schrijven" onclick="filterCategory('schrijven', this)">Ik moet iets schrijven</button>
+        <button class="situation-btn" data-category="slim" onclick="filterCategory('slim', this)">Ik wil slimmer werken</button>
+        <button class="situation-btn" data-category="fixen" onclick="filterCategory('fixen', this)">Iets werkt niet</button>
+        <button class="situation-btn" data-category="ontdekken" onclick="filterCategory('ontdekken', this)">Verras me</button>
+        <button class="situation-btn" data-category="bijsturen" onclick="filterCategory('bijsturen', this)">Mijn output is niet goed</button>
+        <button class="situation-btn" data-category="chains" onclick="filterCategory('chains', this)">Workflows</button>
+        <button class="situation-btn" data-category="industrie" onclick="filterCategory('industrie', this)">Per vakgebied</button>
+    </div>
+</div>
+
+<!-- ===== 3 SOORTEN VRAGEN FRAMEWORK ===== -->
+<div class="framework-banner">
+    <div class="framework-card">
+        <div class="framework-item"><strong>Taak</strong> — "Doe dit specifieke ding"</div>
+        <div class="framework-item"><strong>Resultaat</strong> — "Ik wil uitkomen op X"</div>
+        <div class="framework-item"><strong>Verkennen</strong> — "Wat is er mogelijk?"</div>
+    </div>
+</div>
+
+<!-- ===== MAIN ===== -->
+<main>
+
+<!-- ===== NO RESULTS ===== -->
+<div class="no-results" id="noResults">
+    Geen prompts gevonden. Probeer een ander zoekwoord.
+</div>
+
+<!-- ============================================== -->
+<!-- SECTIE: INSTAPPEN                              -->
+<!-- ============================================== -->
+<div class="section" data-section="instappen" id="section-instappen">
+    <div class="section-header">
+        <span class="section-emoji">&#128640;</span>
+        <span class="section-title">Instappen</span>
+        <span class="section-subtitle">"Ik ga Claude Code gebruiken, hoe begin ik?"</span>
+    </div>
+    <p class="section-description">Voor Level 2 gebruikers die van chatbots (ChatGPT, Claude.ai) naar Claude Code overstappen. En voor iedereen die voor het eerst een project start.</p>
+
+    <!-- Prompt I1 -->
+    <div class="prompt-card" data-category="instappen" data-searchable="interview uitvragen beginnen starten project idee vaag CLAUDE.md">
+        <div class="prompt-header">
+            <div class="prompt-title">I1. Laat Claude je interviewen</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je hebt een vaag idee maar weet niet waar je moet beginnen. Laat Claude de juiste vragen stellen.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Interview me over wat ik nodig heb. Stel me zoveel mogelijk vragen om mijn situatie, mijn doelen, wat ik al heb geprobeerd, en hoe "klaar" eruitziet voor mij te begrijpen. Begin niet met bouwen totdat je minstens 10 vragen hebt gesteld.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Interview me about what I need. Ask me as many questions as you can to understand my situation, my goals, what I've tried before, and what "done" looks like for me. Don't start building until you've asked at least 10 questions.</div>
+        </div>
+        <div class="prompt-details">
+            <button class="details-toggle" onclick="toggleDetails(this)">Tip &#9660;</button>
+            <div class="details-content">Het gesprek wordt je specificatie. Claude stelt vragen die je zelf niet had bedacht. Het resultaat is een betere brief dan je ooit zelf had geschreven.</div>
+        </div>
+        <div class="prompt-details">
+            <button class="details-toggle" onclick="toggleDetails(this)">Als het misgaat &#9660;</button>
+            <div class="details-content fix">
+                <strong>Claude blijft maar vragen stellen:</strong>
+                <div class="fix-prompt">"Stop met vragen stellen. Gebruik je eigen inzicht en bouw iets. We passen het samen aan."
+                    <button class="fix-copy-btn" onclick="copyText(this.parentElement.childNodes[0].textContent.trim(), this)">Kopieer</button>
+                </div>
+                <br>
+                <strong>Je krijgt een plan in plaats van een ding:</strong>
+                <div class="fix-prompt">"Leg het me niet uit. Bouw het. Ik wil iets zien waar ik op kan klikken."
+                    <button class="fix-copy-btn" onclick="copyText(this.parentElement.childNodes[0].textContent.trim(), this)">Kopieer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prompt I2 -->
+    <div class="prompt-card" data-category="instappen" data-searchable="plan uitleg stappen roadmap wat moet ik bouwen">
+        <div class="prompt-header">
+            <div class="prompt-title">I2. Laat het plan uitleggen in gewone taal</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je hebt een duidelijker idee en wilt dat Claude de route uitzet voordat er iets gebouwd wordt.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik ben [beschrijf wat je bouwt] aan het maken voor [beschrijf je doelgroep]. Ik ben niet technisch. Loop me stap voor stap door wat we moeten bouwen, in gewone taal. Bouw nog niks — leg alleen het plan uit.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I'm building [describe your thing] for [describe your audience]. I'm not technical. Walk me through what we need to build, step by step, in plain English. Don't build anything yet — just explain the plan.</div>
+        </div>
+    </div>
+
+    <!-- Prompt I3 -->
+    <div class="prompt-card" data-category="instappen" data-searchable="frustratie pijnpunt probleem oplossing opties waar doet het pijn">
+        <div class="prompt-header">
+            <div class="prompt-title">I3. Waar doet het pijn? — Krijg oplossingen</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je weet wat je dwars zit maar niet hoe de oplossing eruitziet.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik heb een [type bedrijf/werk]. Mijn grootste dagelijkse frustratie is [beschrijf het probleem]. Wat kun je voor me bouwen om dit op te lossen? Geef me 3-5 opties, gerangschikt op hoe snel ik ze werkend kan krijgen.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I run a [type of business]. My biggest daily frustration is [describe the pain point]. What could you build me to fix this? Give me 3-5 options, ranked by how quickly I could get each one working.</div>
+        </div>
+    </div>
+
+    <!-- Prompt I4 -->
+    <div class="prompt-card" data-category="instappen" data-searchable="werkdag kansen automatiseren geen idee beginnen dagelijkse routine">
+        <div class="prompt-header">
+            <div class="prompt-title">I4. Mijn werkdag — vind de kansen</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je weet dat AI kan helpen maar je weet niet eens welke vraag je moet stellen.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik heb geen idee wat ik wil bouwen. Dit is wat ik de hele dag doe: [beschrijf je typische werkdag]. Waar zit de grootste kans voor AI om me te helpen? Wat doe ik handmatig dat ik niet zou moeten doen?</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I have no idea what I want to build. Here's what I do all day: [describe your typical workday]. What's the biggest opportunity for AI to help me? What am I doing manually that I shouldn't be?</div>
+        </div>
+    </div>
+
+    <!-- Prompt I5 - NIEUW -->
+    <div class="prompt-card" data-category="instappen" data-searchable="CLAUDE.md instellen configureren persoonlijk instructies permanent onthouden">
+        <div class="prompt-header">
+            <div class="prompt-title">I5. Je CLAUDE.md opzetten — AI leren wie je bent</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je gebruikt Claude Code voor het eerst en wilt dat het je voorkeuren onthoudt. Dit doe je een keer en het werkt voor altijd.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik wil een CLAUDE.md bestand opzetten — dit is een bestand dat jou vertelt wie ik ben zodat je me beter kunt helpen. Interview me: vraag me naar mijn rol, wat ik dagelijks doe, welke tools ik gebruik, hoe ik communiceer, en alles wat jij denkt dat helpt. Maak daarna het CLAUDE.md bestand voor me aan en zet het op de juiste plek.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I want to set up a CLAUDE.md file — this is a file that tells you about me so you can help me better. Interview me: ask me about my role, what I do day-to-day, tools I use, how I like to communicate, and anything else you think would help you help me. Then create the CLAUDE.md file for me and put it in the right place.</div>
+        </div>
+        <div class="prompt-details">
+            <button class="details-toggle" onclick="toggleDetails(this)">Tip &#9660;</button>
+            <div class="details-content">Denk aan CLAUDE.md als een briefje op iemands bureau dat ze elke ochtend lezen. Begin simpel — 3 regels over jezelf is genoeg. Elke keer dat Claude iets vervelends doet, voeg je een regel toe. Na een paar weken kent het je beter dan je verwacht.</div>
+        </div>
+    </div>
+
+    <!-- Prompt I6 - NIEUW -->
+    <div class="prompt-card" data-category="instappen" data-searchable="project CLAUDE.md template instellen nieuw project configureren">
+        <div class="prompt-header">
+            <div class="prompt-title">I6. Project CLAUDE.md aanmaken</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je start een nieuw project en wilt dat Claude de context onthoudt.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Maak een CLAUDE.md bestand aan in deze projectmap. Zet erin: wat ik aan het bouwen ben, welke technologie we gebruiken, belangrijke keuzes die moeten blijven, en een "Wat NIET doen" sectie (voeg hier fouten aan toe terwijl we werken). Baseer het op wat je al weet van dit project.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Create a CLAUDE.md file in this project folder. Include: what I'm building, the tech stack we're using, key decisions that should stick, and a "What NOT to do" section (we'll add mistakes as we go). Base it on what you already know about this project.</div>
+        </div>
+    </div>
+
+    <!-- Prompt I7 - NIEUW -->
+    <div class="prompt-card" data-category="instappen" data-searchable="context bestanden lezen map project voordat je begint">
+        <div class="prompt-header">
+            <div class="prompt-title">I7. Geef Claude context voordat je begint</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je gaat verder met een bestaand project en Claude moet eerst weten wat er al is.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Lees eerst alle bestanden in [mapnaam] en bekijk de structuur van dit project. Vertel me wat je ziet: welke bestanden er zijn, hoe het in elkaar zit, en of er iets opvalt. Bouw nog niks — ik wil eerst zeker weten dat je het project begrijpt.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">First read all the files in [folder name] and review the structure of this project. Tell me what you see: what files exist, how it's organized, and if anything stands out. Don't build anything yet — I want to make sure you understand the project first.</div>
+        </div>
+    </div>
+
+    <!-- Prompt I8 - NIEUW -->
+    <div class="prompt-card" data-category="instappen" data-searchable="welk tool ChatGPT Claude Gemini Code kiezen wanneer welke AI">
+        <div class="prompt-header">
+            <div class="prompt-title">I8. Welke AI moet ik gebruiken?</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je twijfelt of je Claude Code, Claude Chat, ChatGPT of Gemini moet gebruiken voor een bepaalde taak.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik wil [beschrijf wat je wilt doen]. Welke AI-tool is hier het beste voor? Ik heb toegang tot Claude Code, Claude Chat, ChatGPT en Gemini. Leg in gewone taal uit welke ik moet gebruiken en waarom. Als het er meer dan een zijn, zeg dan welke waarvoor.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I want to [describe what you want to do]. Which AI tool is best for this? I have access to Claude Code, Claude Chat, ChatGPT, and Gemini. Explain in plain language which one I should use and why. If it's more than one, say which for what.</div>
+        </div>
+    </div>
+
+    <!-- Prompt I9 - NIEUW -->
+    <div class="prompt-card" data-category="instappen" data-searchable="bouwen kopen build buy zelf maken betalen tool">
+        <div class="prompt-header">
+            <div class="prompt-title">I9. Zelf bouwen of een tool kopen?</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je overweegt iets te bouwen maar twijfelt of een bestaande tool niet slimmer is.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik heb [beschrijf wat je nodig hebt] nodig. Moet ik dit zelf bouwen met AI of is er een bestaande tool die dit beter doet? Vergelijk de opties eerlijk: kosten, tijd om op te zetten, onderhoud, en beperkingen. Geef me een duidelijk advies.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I need [describe what you need]. Should I build this myself with AI or is there an existing tool that does this better? Compare the options honestly: cost, setup time, maintenance, and limitations. Give me a clear recommendation.</div>
+        </div>
+        <div class="prompt-details">
+            <button class="details-toggle" onclick="toggleDetails(this)">Tip &#9660;</button>
+            <div class="details-content">Vuistregel: bouw het verbindingsweefsel, koop de grote platformen. Bouw geen Calendly-kloon — bouw de automatisering er omheen. Bouw geen CRM — bouw de koppeling die je CRM slim maakt.</div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================== -->
+<!-- PLACEHOLDER SECTIES (worden in volgende stappen gevuld) -->
+<!-- ============================================== -->
+
+<div class="section" data-section="maken" id="section-maken">
+    <div class="section-header">
+        <span class="section-emoji">&#128296;</span>
+        <span class="section-title">Maken</span>
+        <span class="section-subtitle">"Ik wil iets bouwen"</span>
+    </div>
+    <p class="section-description">Websites, tools, landingspagina's, formulieren, dashboards. De gouden regel: wees specifiek over wat je wilt, vaag over hoe het gebouwd moet worden.</p>
+
+    <!-- Prompt M1 -->
+    <div class="prompt-card" data-category="maken" data-searchable="bouwen maken tool website app simpel beginnen nieuw project">
+        <div class="prompt-header">
+            <div class="prompt-title">M1. Bouw iets — begin simpel</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Wanneer: Elke keer dat je iets nieuws bouwt. Dit is de basis-template.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Bouw me een [type ding] dat [wat het doet] voor [voor wie het is]. Het moet aanvoelen als [beschrijf de sfeer — strak, professioneel, speels, minimaal, etc.]. Begin met de simpelste versie die werkt.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Build me a [type of thing] that [what it does] for [who it's for]. It should feel [describe the vibe — clean, professional, playful, minimal, etc.]. Start with the simplest version that works.</div>
+        </div>
+        <div class="prompt-details">
+            <button class="details-toggle" onclick="toggleDetails(this)">Tip &#9660;</button>
+            <div class="details-content">"Begin met de simpelste versie die werkt" is de sleutelzin. Het voorkomt dat het project uit de hand loopt voordat het begonnen is. Je kunt altijd later functies toevoegen. Gooi eerst de klei op tafel.</div>
+        </div>
+        <div class="prompt-details">
+            <button class="details-toggle" onclick="toggleDetails(this)">Als het misgaat &#9660;</button>
+            <div class="details-content fix">
+                <strong>Claude bouwt een raket terwijl je om een papieren vliegtuig vroeg:</strong>
+                <div class="fix-prompt">"Dat is te veel. Strip het terug naar de absoluut simpelste versie. Een pagina. Geen frameworks. Geen databases."
+                    <button class="fix-copy-btn" onclick="copyText(this.parentElement.childNodes[0].textContent.trim(), this)">Kopieer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prompt M2 -->
+    <div class="prompt-card" data-category="maken" data-searchable="landingspagina landing page website hero booking knop professioneel">
+        <div class="prompt-header">
+            <div class="prompt-title">M2. Landingspagina van een wensenlijst</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Wanneer: Landingspagina's, salespagina's, evenement-registratiepagina's. Dingen waar je normaal iemand anders voor betaalt.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik wil een landingspagina voor [mijn bedrijf/product/evenement]. Dit is wat belangrijk is: [noem 3-5 dingen — bijv. "groot hero-beeld, duidelijke prijzen, een boekingsknop die naar Calendly gaat, werkt op telefoons"]. Maak het professioneel en modern.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I want a landing page for [my business/product/event]. Here's what matters: [list 3-5 things — e.g., "big hero image, clear pricing, a booking button that goes to Calendly, works on phones"]. Make it look professional and modern.</div>
+        </div>
+    </div>
+
+    <!-- Prompt M3 -->
+    <div class="prompt-card" data-category="maken" data-searchable="spreadsheet dashboard data grafiek visualisatie excel">
+        <div class="prompt-header">
+            <div class="prompt-title">M3. Spreadsheet naar dashboard</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je hebt data opgesloten in een spreadsheet en wilt het visueel zien. Geen formules, geen draaitabellen — gewoon vragen en antwoorden.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik heb een spreadsheet met [beschrijf de data]. Bouw me een dashboard dat [wat je wilt zien] laat zien. Ik moet de data kunnen bijwerken en het dashboard moet meeveranderen.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I have a spreadsheet with [describe the data]. Build me a dashboard that shows [what you want to see]. I should be able to update the data and see the dashboard change.</div>
+        </div>
+    </div>
+
+    <!-- Prompt M4 -->
+    <div class="prompt-card" data-category="maken" data-searchable="simpel tool utility klein ding eenvoudig functioneel">
+        <div class="prompt-header">
+            <div class="prompt-title">M4. Een klein ding dat een ding doet</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je hebt gewoon een kleine tool nodig. Niets ingewikkelds.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik heb een simpel tooltje nodig dat [een specifiek ding doet]. Niks ingewikkelds — gewoon iets dat werkt. Ik vertel het je als ik meer functies wil.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I need a simple tool that does [one specific thing]. Nothing fancy — just something that works. I'll tell you if I want more features later.</div>
+        </div>
+    </div>
+
+    <!-- Prompt M5 -->
+    <div class="prompt-card" data-category="maken" data-searchable="feature toevoegen uitbreiden bestaand itereren een ding erbij">
+        <div class="prompt-header">
+            <div class="prompt-title">M5. Voeg een functie toe aan iets bestaands</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je hebt al iets gebouwd en wilt het stap voor stap uitbreiden. Een steen tegelijk.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Pak deze bestaande [website/tool/pagina] en voeg [een nieuwe functie] toe. Verander verder niks — voeg alleen het nieuwe ding toe.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Take this existing [website/tool/page] and add [one new feature]. Don't change anything else — just add the new thing.</div>
+        </div>
+        <div class="prompt-details">
+            <button class="details-toggle" onclick="toggleDetails(this)">Als het misgaat &#9660;</button>
+            <div class="details-content fix">
+                <strong>Het ene ding fixen brak iets anders:</strong>
+                <div class="fix-prompt">"Maak de laatste wijziging ongedaan. [Specifieke functie] werkte hiervoor en nu niet meer. Fix [nieuwe ding] zonder [werkend ding] aan te raken."
+                    <button class="fix-copy-btn" onclick="copyText(this.parentElement.childNodes[0].textContent.trim(), this)">Kopieer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prompt M6 -->
+    <div class="prompt-card" data-category="maken" data-searchable="mobiel telefoon tablet responsive schermgrootte aanpassen">
+        <div class="prompt-header">
+            <div class="prompt-title">M6. Maak het mobiel-vriendelijk</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Wanneer: Het ziet er goed uit op je computer maar waardeloos op je telefoon.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Laat dit werken op telefoons, tablets en desktops. Test het op verschillende schermgroottes en fix alles wat kapot gaat.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Make this work on phones, tablets, and desktops. Test it at different sizes and fix anything that breaks.</div>
+        </div>
+        <div class="prompt-details">
+            <button class="details-toggle" onclick="toggleDetails(this)">Tip &#9660;</button>
+            <div class="details-content">Claude kan je pagina daadwerkelijk openen in een browser en verschillende schermgroottes testen — het gokt niet. Het ziet wat kapot is op dezelfde manier als jij.</div>
+        </div>
+    </div>
+
+    <!-- Prompt M7 -->
+    <div class="prompt-card" data-category="maken" data-searchable="screenshot namaak kopie design uiterlijk layout nabouwen">
+        <div class="prompt-header">
+            <div class="prompt-title">M7. Maak het zoals dit — screenshot</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je hebt een website gevonden die je mooi vindt. Screenshot het, sleep het in de chat, klaar.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Maak het zo.
+[sleep een screenshot in de chat]</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Make it look like this.
+[drag and drop a screenshot into the chat]</div>
+        </div>
+        <div class="prompt-details">
+            <button class="details-toggle" onclick="toggleDetails(this)">Als het misgaat &#9660;</button>
+            <div class="details-content fix">
+                <strong>Het lijkt er niet op:</strong>
+                <div class="fix-prompt">"Kijk nog een keer naar de screenshot. Kopieer de exacte layout — [beschrijf specifieke elementen]. Ik wil geen interpretatie, ik wil een kopie."
+                    <button class="fix-copy-btn" onclick="copyText(this.parentElement.childNodes[0].textContent.trim(), this)">Kopieer</button>
+                </div>
+                <br>
+                <strong>Layout klopt maar details niet:</strong>
+                <div class="fix-prompt">"Layout is goed. Kopieer nu: de lettergroottes, de ruimte tussen elementen, en de kleuren precies."
+                    <button class="fix-copy-btn" onclick="copyText(this.parentElement.childNodes[0].textContent.trim(), this)">Kopieer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prompt M8 -->
+    <div class="prompt-card" data-category="maken" data-searchable="screenshot fout kapot wat is er mis probleem visueel">
+        <div class="prompt-header">
+            <div class="prompt-title">M8. Wat is er mis? — screenshot</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Iets ziet er kapot uit en je weet niet waarom. Laat het zien in plaats van het te beschrijven.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Hier is een screenshot van wat ik zie.
+[sleep de screenshot erin]
+Wat is er mis en hoe lossen we het op?</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Here's a screenshot of what I'm seeing.
+[drag and drop]
+What's wrong and how do we fix it?</div>
+        </div>
+    </div>
+
+    <!-- Prompt M9 -->
+    <div class="prompt-card" data-category="maken" data-searchable="redesign voor na vergelijken oud nieuw design verbeteren">
+        <div class="prompt-header">
+            <div class="prompt-title">M9. Redesign: voor en na</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je hebt iets dat werkt maar er amateuristisch uitziet. Laat Claude het verschil dichten.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Dit is mijn huidige [website/dashboard/tool].
+[sleep een screenshot erin]
+Ik wil dat het er meer zo uitziet:
+[sleep een tweede screenshot erin]
+Houd de inhoud, verander het design.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Here's my current [website/dashboard/tool].
+[drag and drop a screenshot]
+I want it to look more like this:
+[drag and drop a second screenshot]
+Keep the content, change the design.</div>
+        </div>
+    </div>
+
+    <!-- Prompt M10 -->
+    <div class="prompt-card" data-category="maken" data-searchable="schets tekening whiteboard napkin papier bouwen interpreteren">
+        <div class="prompt-header">
+            <div class="prompt-title">M10. Bouw van een schets of tekening</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je hebt iets op papier getekend en wilt dat het echt wordt. Claude is verrassend goed in het interpreteren van ruwe schetsen.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik heb dit geschetst op papier / op een whiteboard.
+[sleep een foto erin]
+Bouw dit voor me. Interpreteer mijn slechte tekening zo goed als je kunt.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I sketched this on paper / on a whiteboard.
+[drag and drop a photo]
+Build this for me. Interpret my terrible drawing as best you can.</div>
+        </div>
+    </div>
+</div>
+
+<div class="section" data-section="schrijven" id="section-schrijven">
+    <div class="section-header">
+        <span class="section-emoji">&#9997;&#65039;</span>
+        <span class="section-title">Schrijven</span>
+        <span class="section-subtitle">"Ik moet iets op papier krijgen"</span>
+    </div>
+    <p class="section-description">E-mails, voorstellen, blogs, social media, nieuwsbrieven. In jouw eigen stem, niet in AI-stem.</p>
+
+    <!-- Prompt S1 -->
+    <div class="prompt-card" data-category="schrijven" data-searchable="stem voice toon schrijfstijl leren herkennen eigen woorden">
+        <div class="prompt-header">
+            <div class="prompt-title">S1. Leer Claude jouw schrijfstem</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Voordat je Claude iets laat schrijven dat klanten zien. Voer het eerst je echte teksten.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Hier zijn 5 voorbeelden van mijn echte teksten:
+[plak echte e-mails, blogposts, social media posts, of wat je zelf hebt geschreven]
+Bestudeer mijn stem. Let op mijn zinslengte, mijn eigenaardigheden, mijn toon. Schrijf alles vanaf nu in deze stem.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Here are 5 examples of my real writing:
+[paste actual emails, blog posts, social media posts, or anything you've written yourself]
+Study my voice. Notice my sentence length, my quirks, my tone. Write everything from now on in this voice.</div>
+        </div>
+        <div class="prompt-details">
+            <button class="details-toggle" onclick="toggleDetails(this)">Tip &#9660;</button>
+            <div class="details-content">Houd elk voorbeeld kort — een alinea of twee is genoeg. Overweeg een "stem-voorbeeld" bestand toe te voegen aan je CLAUDE.md zodat Claude altijd je stem kent, elke sessie, zonder dat je het opnieuw hoeft te plakken.</div>
+        </div>
+        <div class="prompt-details">
+            <button class="details-toggle" onclick="toggleDetails(this)">Als het misgaat &#9660;</button>
+            <div class="details-content fix">
+                <strong>Het negeert je schrijfvoorbeelden:</strong>
+                <div class="fix-prompt">"Lees die schrijfvoorbeelden opnieuw. Let op: ik gebruik korte alinea's. Ik begin zinnen met 'En' en 'Maar'. Kopieer DAT geluid, niet 'professioneel zakelijk schrijven'."
+                    <button class="fix-copy-btn" onclick="copyText(this.parentElement.childNodes[0].textContent.trim(), this)">Kopieer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prompt S2 -->
+    <div class="prompt-card" data-category="schrijven" data-searchable="content tekst blog artikel schrijven zonder AI geur slop woorden vermijden">
+        <div class="prompt-header">
+            <div class="prompt-title">S2. Content zonder AI-geur</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je hebt content nodig die niet schreeuwt "dit is door AI geschreven".</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Schrijf een [type content] over [onderwerp] voor [doelgroep]. Houd het [toon — vriendelijk, professioneel, direct, warm]. Vermijd deze woorden en zinnen: "in het huidige landschap", "alomvattend", "optimaliseren", "een diepgaande blik", "het is belangrijk op te merken dat", "laten we eens duiken in", "game-changer", "naadloos", "robuust", "faciliteren", "een breed scala aan".</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Write a [type of content] about [topic] for [audience]. Keep it [tone — friendly, professional, direct, warm]. Avoid these words and phrases: "delve", "I'd be happy to", "in today's rapidly evolving", "comprehensive", "leverage", "unlock", "game-changer", "let's dive in", "robust", "facilitate", "a wide range of".</div>
+        </div>
+        <div class="prompt-details">
+            <button class="details-toggle" onclick="toggleDetails(this)">Als het misgaat &#9660;</button>
+            <div class="details-content fix">
+                <strong>Het klinkt nog steeds als AI:</strong>
+                <div class="fix-prompt">"Dit leest als AI. Herschrijf het. Kortere zinnen. Meer mening. Gebruik woorden die ik echt zou zeggen. Hier is een voorbeeld van mijn echte tekst: [plak]."
+                    <button class="fix-copy-btn" onclick="copyText(this.parentElement.childNodes[0].textContent.trim(), this)">Kopieer</button>
+                </div>
+                <br>
+                <strong>Het is veel te lang en formeel:</strong>
+                <div class="fix-prompt">"Halveer dit. Schrap elke zin die zijn plek niet verdient. Geen keelschrapen. Kom to the point."
+                    <button class="fix-copy-btn" onclick="copyText(this.parentElement.childNodes[0].textContent.trim(), this)">Kopieer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prompt S3 -->
+    <div class="prompt-card" data-category="schrijven" data-searchable="herschrijven menselijk klinken minder corporate conversationeel">
+        <div class="prompt-header">
+            <div class="prompt-title">S3. Laat AI-tekst menselijk klinken</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je hebt AI-tekst (of je eigen te formele tekst) en wilt het natuurlijk laten klinken.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Herschrijf dit zodat het klinkt alsof een mens het heeft geschreven. Minder zakelijk, meer conversatie. Korte zinnen. Schrap alles wat klinkt als opvulling.
+[plak de tekst]</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Rewrite this so it sounds like a human wrote it. Less corporate, more conversational. Short sentences. Cut anything that sounds like filler.
+[paste the text]</div>
+        </div>
+    </div>
+
+    <!-- Prompt S4 -->
+    <div class="prompt-card" data-category="schrijven" data-searchable="email linkedin nieuwsbrief post doel actie zakelijk schrijven">
+        <div class="prompt-header">
+            <div class="prompt-title">S4. Zakelijke tekst met een doel</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je hebt een specifieke schrijftaak met een helder doel — "ze moeten een call boeken" is nuttiger dan "schrijf een overtuigende e-mail".</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Schrijf een [e-mail / LinkedIn post / nieuwsbrief / voorstel] aan [doelgroep] over [onderwerp]. Het doel is om [wat je wilt dat ze doen na het lezen]. Houd het onder [aantal woorden]. Een idee per alinea.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Write a [email / LinkedIn post / newsletter / proposal] to [audience] about [topic]. The goal is to [what you want them to do after reading]. Keep it under [word count]. One idea per paragraph.</div>
+        </div>
+    </div>
+
+    <!-- Prompt S5 -->
+    <div class="prompt-card" data-category="schrijven" data-searchable="voorstel offerte klant project proposal prijs">
+        <div class="prompt-header">
+            <div class="prompt-title">S5. Klantvoorstel in seconden</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Een klant vraagt om een voorstel en je wilt geen 2 uur bezig zijn. Krijg een solide eerste versie in seconden.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik moet een voorstel schrijven voor [klant/project]. Dit weet ik over ze: [context]. Dit is wat ik aanbied: [je dienst]. Dit is de prijs: [bedrag]. Schrijf een voorstel dat zelfverzekerd klinkt maar niet opdringerig.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I need to write a proposal for [client/project]. Here's what I know about them: [context]. Here's what I'm offering: [your service]. Here's the price: [amount]. Write a proposal that sounds confident but not pushy.</div>
+        </div>
+    </div>
+
+    <!-- Prompt S6 -->
+    <div class="prompt-card" data-category="schrijven" data-searchable="blogpost email nieuwsbrief volgende lezen map bestanden stem stijl">
+        <div class="prompt-header">
+            <div class="prompt-title">S6. Lees mijn posts en schrijf de volgende</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Wanneer: Dit is waar Claude Code uitblinkt. In plaats van telkens je voorbeelden te plakken, leest Claude je bestanden direct en leert je stem van het echte werk.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Lees de laatste 5 blogposts (of e-mails, of nieuwsbrieven) in mijn [mappad] en schrijf de volgende in dezelfde stem en stijl. Onderwerp: [waar je over wilt schrijven]. Sla het op als een nieuw bestand in dezelfde map.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Read the last 5 blog posts (or emails, or newsletters) in my [folder path] and write the next one in the same voice and style. Topic: [what you want to write about]. Save it as a new file in the same folder.</div>
+        </div>
+    </div>
+</div>
+
+<div class="section" data-section="slim" id="section-slim">
+    <div class="section-header">
+        <span class="section-emoji">&#9889;</span>
+        <span class="section-title">Slim werken</span>
+        <span class="section-subtitle">"Ik wil slimmer, niet harder werken"</span>
+    </div>
+    <p class="section-description">Data analyseren, processen automatiseren, tools aan elkaar koppelen, notificaties opzetten. Claude Code kan bestanden direct lezen — geen copy-paste nodig.</p>
+
+    <!-- Prompt SW1 -->
+    <div class="prompt-card" data-category="slim" data-searchable="bestand data lezen analyseren patronen spreadsheet interessant">
+        <div class="prompt-header">
+            <div class="prompt-title">SW1. Lees dit bestand en vertel me wat opvalt</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je hebt een spreadsheet, rapport of databestand en geen idee wat je ermee moet. Laat Claude de analist zijn.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Lees dit bestand en vertel me wat interessant is. Welke patronen zie je? Waar moet ik op letten?</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Read this file and tell me what's interesting. What patterns do you see? What should I be paying attention to?</div>
+        </div>
+        <div class="prompt-details">
+            <button class="details-toggle" onclick="toggleDetails(this)">Als het misgaat &#9660;</button>
+            <div class="details-content fix">
+                <strong>Het verzint cijfers die niet in je data staan:</strong>
+                <div class="fix-prompt">"Gebruik alleen data uit het bestand dat ik je heb gegeven. Niet afleiden, niet schatten, geen gaten opvullen. Als de data het niet zegt, zeg jij het ook niet."
+                    <button class="fix-copy-btn" onclick="copyText(this.parentElement.childNodes[0].textContent.trim(), this)">Kopieer</button>
+                </div>
+                <br>
+                <strong>De inzichten zijn oppervlakkig:</strong>
+                <div class="fix-prompt">"De gemiddelden kan ik zelf ook zien. Vertel me iets dat ik niet in een oogopslag kan zien. Wat is het verhaal in deze data? Wat zou een CFO vragen over deze cijfers?"
+                    <button class="fix-copy-btn" onclick="copyText(this.parentElement.childNodes[0].textContent.trim(), this)">Kopieer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prompt SW2 -->
+    <div class="prompt-card" data-category="slim" data-searchable="rapport samenvatting data team klant baas presentabel">
+        <div class="prompt-header">
+            <div class="prompt-title">SW2. Maak er een rapport van</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je moet ruwe data omzetten in iets presentabels. Goed voor wekelijkse of maandelijkse rapportages.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Lees de data in [bestand of mappad] en maak een samenvattend rapport dat ik kan sturen naar [mijn team / mijn klant / mijn baas]. Sla het op als een nieuw document op mijn bureaublad. Neem de belangrijkste cijfers, trends, en een aanbeveling op basis van wat je ziet.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Read the data in [file or folder path] and create a summary report I could send to [my team / my client / my boss]. Save it as a new document on my desktop. Include key numbers, trends, and one recommendation based on what you see.</div>
+        </div>
+    </div>
+
+    <!-- Prompt SW3 -->
+    <div class="prompt-card" data-category="slim" data-searchable="map folder bestanden samenvatten thema patronen overzicht documenten">
+        <div class="prompt-header">
+            <div class="prompt-title">SW3. Lees een hele map en vat samen</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je hebt een map vol documenten en wilt snel weten wat erin zit. Een middag werk van jou, dertig seconden van Claude.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Lees alle bestanden in mijn [mapnaam] map en geef me een samenvatting van wat erin zit. Wat zijn de rode draden? Mist er iets of is er iets inconsistent? Maak een samenvattend document en sla het op naast de originelen.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Read every file in my [folder name] folder and give me a summary of what's in there. What are the key themes? Is anything missing or inconsistent? Create a summary document and save it next to the originals.</div>
+        </div>
+    </div>
+
+    <!-- Prompt SW4 -->
+    <div class="prompt-card" data-category="slim" data-searchable="vergelijken opties leveranciers data bestanden kiezen beslissing">
+        <div class="prompt-header">
+            <div class="prompt-title">SW4. Vergelijk opties met echte data</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je kiest tussen leveranciers, vergelijkt offertes, of evalueert opties — met echte bestanden, niet onderbuikgevoel.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik heb data over [Optie A] in [dit bestand] en data over [Optie B] in [dit bestand]. Vergelijk ze voor me. Mijn situatie: [beschrijf het]. Ik vind [kosten / gebruiksgemak / wat voor jou telt] het belangrijkst. Maak een vergelijkingstabel en sla het op als nieuw bestand.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I've got data on [Option A] in [this file] and data on [Option B] in [this file]. Compare them for me. My situation: [describe it]. I care most about [cost / ease of use / whatever matters]. Build me a comparison table and save it as a new file.</div>
+        </div>
+    </div>
+
+    <!-- Prompt SW5 -->
+    <div class="prompt-card" data-category="slim" data-searchable="koppelen verbinden services automatisch trigger actie API script">
+        <div class="prompt-header">
+            <div class="prompt-title">SW5. Koppel twee tools aan elkaar</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je kopieert handmatig info tussen twee diensten. Als je het meer dan 2x per week doet, moet het geautomatiseerd worden.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik wil mijn [Service A] koppelen aan mijn [Service B]. Wanneer [trigger gebeurt], wil ik dat [actie automatisch gebeurt]. Bouw me een script dat dit doet. Loop me stap voor stap door eventuele wachtwoorden of sleutels die ik moet instellen.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I want to connect my [Service A] to my [Service B]. When [trigger happens], I want [action to happen automatically]. Build me a script that does this. Walk me through any passwords or keys I'll need to set up, step by step.</div>
+        </div>
+        <div class="prompt-details">
+            <button class="details-toggle" onclick="toggleDetails(this)">Als het misgaat &#9660;</button>
+            <div class="details-content fix">
+                <strong>De API-sleutel werkt niet:</strong>
+                <div class="fix-prompt">"De sleutel klopt misschien niet. Loop me door waar ik de juiste API-sleutel kan vinden voor [servicenaam]. Wat moet ik zoeken in hun instellingen?"
+                    <button class="fix-copy-btn" onclick="copyText(this.parentElement.childNodes[0].textContent.trim(), this)">Kopieer</button>
+                </div>
+                <br>
+                <strong>Beveiligingswaarschuwingen:</strong>
+                <div class="fix-prompt">"Wat betekent deze waarschuwing in gewone taal? Is dit een echt risico of gewoon voorzichtigheid? Wat is de veiligste manier om door te gaan?"
+                    <button class="fix-copy-btn" onclick="copyText(this.parentElement.childNodes[0].textContent.trim(), this)">Kopieer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prompt SW6 -->
+    <div class="prompt-card" data-category="slim" data-searchable="automatiseren handmatig proces workflow stappen besparen script">
+        <div class="prompt-header">
+            <div class="prompt-title">SW6. Automatiseer mijn handmatige proces</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je hebt een herhalend werkproces dat je tijd vreet. Beschrijf het stap voor stap en laat Claude uitzoeken wat geautomatiseerd kan worden.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik doe dit proces handmatig elke [dag/week/maand]:
+1. [Stap 1]
+2. [Stap 2]
+3. [Stap 3]
+Kun je iets bouwen om dit (deels) te automatiseren? Vertel me wat je automatisch kunt doen en wat ik nog handmatig moet doen. Sla scripts op in een map op mijn bureaublad.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I currently do this process manually every [day/week/month]:
+1. [Step 1]
+2. [Step 2]
+3. [Step 3]
+Can you build something to automate some or all of this? Tell me what you can handle automatically and what would still need me to do manually. Save any scripts you create in a folder on my desktop.</div>
+        </div>
+    </div>
+
+    <!-- Prompt SW7 -->
+    <div class="prompt-card" data-category="slim" data-searchable="email automatisch trigger sturen klant opvolging herinnering">
+        <div class="prompt-header">
+            <div class="prompt-title">SW7. Automatische e-mail trigger</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Wanneer: Follow-ups, onboarding, herinneringen, bedankjes — de dingen die je van plan bent maar vergeet omdat je druk bent.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik wil automatisch een e-mail sturen naar mijn klanten [wanneer X gebeurt]. De e-mail moet [beschrijf de strekking] zeggen. Bouw me een script dat dit doet en loop me door de installatie.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I want to send an automatic email to my clients [when X happens]. The email should say [describe the gist]. Build me a script that does this and walk me through setting it up.</div>
+        </div>
+    </div>
+
+    <!-- Prompt SW8 -->
+    <div class="prompt-card" data-category="slim" data-searchable="notificatie melding monitoren checken automatisch slack email waarschuwing">
+        <div class="prompt-header">
+            <div class="prompt-title">SW8. Stop met handmatig checken</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je hoeft geen dashboards te checken. Het dashboard moet naar jou komen.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik ben het zat om handmatig [ding] te checken. Bouw me iets dat automatisch checkt en me een melding stuurt in [Slack / e-mail / waar dan ook] wanneer [specifieke gebeurtenis plaatsvindt].</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I'm tired of manually checking [thing]. Build me something that checks automatically and sends me a notification in [Slack / email / wherever] when [specific event happens].</div>
+        </div>
+    </div>
+</div>
+
+<div class="section" data-section="fixen" id="section-fixen">
+    <div class="section-header">
+        <span class="section-emoji">&#128295;</span>
+        <span class="section-title">Fixen</span>
+        <span class="section-subtitle">"Het werkt niet en ik weet niet waarom"</span>
+    </div>
+    <p class="section-description">Fouten oplossen, foutmeldingen ontcijferen, opnieuw beginnen, en vastleggen wat je hebt geleerd.</p>
+    <!-- Prompt F1 -->
+    <div class="prompt-card" data-category="fixen" data-searchable="fout bug kapot werkt niet fix repareer debug doet niet wat ik wil">
+        <div class="prompt-header">
+            <div class="prompt-title">F1. Het doet X maar ik wil Y</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Iets werkt niet. Je weet niet waarom. Je hoeft het ook niet te weten. Beschrijf wat je ziet en wat je verwachtte — Claude zoekt het uit.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Dit werkt niet. Het doet [wat er nu gebeurt] maar ik wil dat het [wat het zou moeten doen] doet. Fix het.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">This isn't working. It's doing [what's happening] but I want it to do [what should be happening]. Fix it.</div>
+        </div>
+        <details class="tip-block">
+            <summary>Tip</summary>
+            <div class="tip-content">Je mag vaag zijn. "Het verandert niet van grootte als ik het venster kleiner maak" is genoeg — Claude snapt het uit de context. Maar paniek helpt niet: "dit is troep, niks werkt" zorgt dat Claude veilige, saaie oplossingen kiest. Wees specifiek over wat je ziet, niet boos over wat je voelt.</div>
+        </details>
+        <details class="tip-block">
+            <summary>Als het misgaat</summary>
+            <div class="tip-content">
+                <strong>Claude kan het probleem niet reproduceren:</strong>
+                <div class="fix-prompt">"Ik beschrijf precies wat ik zie: [screenshot/beschrijving]. Dit gebeurt wanneer ik [exacte stappen]. Het begon nadat [wat er veranderde]. Kun je het nu zien?"
+                    <button class="fix-copy-btn" onclick="copyText(this.parentElement.childNodes[0].textContent.trim(), this)">Kopieer</button>
+                </div>
+                <br>
+                <strong>De fix maakte iets anders kapot:</strong>
+                <div class="fix-prompt">"Draai alles terug wat je net hebt gedaan. De fix voor [probleem A] heeft [functie B] kapot gemaakt. Ik heb beide nodig. Kies een andere aanpak."
+                    <button class="fix-copy-btn" onclick="copyText(this.parentElement.childNodes[0].textContent.trim(), this)">Kopieer</button>
+                </div>
+            </div>
+        </details>
+    </div>
+
+    <!-- Prompt F2 -->
+    <div class="prompt-card" data-category="fixen" data-searchable="error foutmelding rood tekst crash fout begrijpen uitleg ontcijferen">
+        <div class="prompt-header">
+            <div class="prompt-title">F2. Enge foutmelding ontcijferen</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je ziet een foutmelding — rode tekst, nummers, woorden die je niet herkent. Plak het hele ding erin. Claude leest foutmeldingen zoals een monteur motorlampjes leest.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Deze foutmelding blijft verschijnen:
+[plak de volledige foutmelding]
+Ik snap niet wat het betekent. Fix het en leg in gewone mensentaal uit wat er aan de hand was.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">This error keeps appearing:
+[paste the full error message]
+I don't know what it means. Fix it and explain what happened in plain English.</div>
+        </div>
+        <details class="tip-block">
+            <summary>Tip</summary>
+            <div class="tip-content">Plak altijd de <em>volledige</em> foutmelding, niet alleen het stukje dat je herkent. De technische details die jij overslaat zijn vaak precies wat Claude nodig heeft. Als de foutmelding lang is, plak het hele ding — Claude filtert zelf wat relevant is.</div>
+        </details>
+        <details class="tip-block">
+            <summary>Als het misgaat</summary>
+            <div class="tip-content">
+                <strong>Claude geeft een te technische uitleg:</strong>
+                <div class="fix-prompt">"Te technisch. Leg het uit alsof ik geen programmeur ben. Wat ging er fout, wat was de oorzaak, en wat heb je gedaan om het te fixen?"
+                    <button class="fix-copy-btn" onclick="copyText(this.parentElement.childNodes[0].textContent.trim(), this)">Kopieer</button>
+                </div>
+            </div>
+        </details>
+    </div>
+
+    <!-- Prompt F3 -->
+    <div class="prompt-card" data-category="fixen" data-searchable="gisteren werkte kapot niks veranderd spontaan stuk update verlopen">
+        <div class="prompt-header">
+            <div class="prompt-title">F3. Het werkte gisteren nog</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Gisteren werkte alles prima. Nu niet meer. Je hebt niks veranderd. Waarschijnlijk is er op de achtergrond iets geüpdatet, een sleutel verlopen, of een service aangepast.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Dit werkte gisteren nog en nu niet meer. Ik heb niks veranderd. Wat is er gebeurd en hoe lossen we het op?</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">This was working yesterday and now it isn't. I didn't change anything. What happened and how do we fix it?</div>
+        </div>
+        <details class="tip-block">
+            <summary>Tip</summary>
+            <div class="tip-content">Meestal is de oorzaak: iets is op de achtergrond geüpdatet, een API-sleutel is verlopen, of een externe service heeft iets veranderd. Claude kan dit uitzoeken. Vertel erbij wanneer het voor het laatst wél werkte en of je iets opviel dat anders was.</div>
+        </details>
+        <details class="tip-block">
+            <summary>Als het misgaat</summary>
+            <div class="tip-content">
+                <strong>Claude zegt dat je wél iets veranderd hebt:</strong>
+                <div class="fix-prompt">"Ik weet zeker dat ik niks heb veranderd aan de code. Check of er externe dingen zijn veranderd: updates, verlopen sleutels, services die offline zijn, of iets dat automatisch is geüpdatet."
+                    <button class="fix-copy-btn" onclick="copyText(this.parentElement.childNodes[0].textContent.trim(), this)">Kopieer</button>
+                </div>
+            </div>
+        </details>
+    </div>
+
+    <!-- Prompt F4 -->
+    <div class="prompt-card" data-category="fixen" data-searchable="opnieuw beginnen schone lei herstarten fresh rebuild vastgelopen">
+        <div class="prompt-header">
+            <div class="prompt-title">F4. Opnieuw beginnen</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je bent al 20 minuten aan het debuggen en het wordt erger in plaats van beter. Soms is de snelste fix: opnieuw bouwen. Zeker als het origineel in een paar minuten is gemaakt.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">We zijn al een tijdje heen en weer aan het gaan en het wordt niet beter. Laten we opnieuw beginnen. Dit is wat ik wil: [beschrijf het einddoel]. Bouw het helemaal opnieuw.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I've been going back and forth with you trying to fix this and it's not getting better. Let's start fresh. Here's what I want: [describe the end goal]. Build it again from scratch.</div>
+        </div>
+        <details class="tip-block">
+            <summary>Tip</summary>
+            <div class="tip-content">Wees niet zuinig op iets dat in minuten gebouwd is. Opnieuw beginnen is vaak sneller dan laag-voor-laag fixen. Maar wil je je werk niet kwijt? Zeg dan: "Maak eerst een backup van alles. Fix dan alleen [specifiek probleem] zonder [dingen die wel werken] aan te raken."</div>
+        </details>
+        <details class="tip-block">
+            <summary>Als het misgaat</summary>
+            <div class="tip-content">
+                <strong>Je wilt niet alles kwijtraken:</strong>
+                <div class="fix-prompt">"Bouw het niet helemaal opnieuw. Sla eerst een backup op van alles. Fix dan alleen [specifiek probleem] zonder [deze onderdelen die wél werken] aan te raken."
+                    <button class="fix-copy-btn" onclick="copyText(this.parentElement.childNodes[0].textContent.trim(), this)">Kopieer</button>
+                </div>
+            </div>
+        </details>
+    </div>
+
+    <!-- Prompt F5 -->
+    <div class="prompt-card" data-category="fixen" data-searchable="geleerd opslaan notities CLAUDE.md vastleggen les leren onthouden">
+        <div class="prompt-header">
+            <div class="prompt-title">F5. Wat ging er fout? Leg het vast</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Wanneer: Claude heeft net iets gefixt. Dit is het moment om te leren: laat Claude uitleggen wat er mis was en voeg het toe aan je CLAUDE.md zodat het niet weer gebeurt.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Dat is gefixt. Wat was het probleem precies? En wat moet ik toevoegen aan mijn CLAUDE.md instructies zodat we dit niet nog een keer tegenkomen?</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">That fixed it. What was the problem? What should I add to my CLAUDE.md instructions so we don't hit this again?</div>
+        </div>
+        <details class="tip-block">
+            <summary>Tip</summary>
+            <div class="tip-content">Dit is hoe je CLAUDE.md groeit. Claude vertelt je wat er fout ging, je plakt de les in je instructies, en het gebeurt nooit meer. Na een paar weken heb je een persoonlijk kennisbestand dat Claude steeds slimmer maakt voor jouw projecten.</div>
+        </details>
+    </div>
+
+    <!-- Prompt F6 -->
+    <div class="prompt-card" data-category="fixen" data-searchable="controleer test review check kwaliteit zelf-check bouwen gebouwd">
+        <div class="prompt-header">
+            <div class="prompt-title">F6. Controleer wat je net hebt gemaakt</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Claude heeft net iets gebouwd. Voordat je verder gaat — laat Claude zijn eigen werk checken. AI maakt fouten. Een zelf-review vangt dingen op die je zelf niet zou zien.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Stop even. Voordat we verder gaan — bekijk kritisch wat je net hebt gemaakt. Check op:
+- Werkt alles wat je hebt gebouwd?
+- Zijn er fouten, ontbrekende onderdelen, of dingen die kapot zouden gaan?
+- Is het simpel genoeg of heb je het onnodig ingewikkeld gemaakt?
+- Wat zou een strenge reviewer hier van zeggen?
+Wees eerlijk.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Hold on. Before we move on — critically review what you just built. Check for:
+- Does everything work as intended?
+- Are there bugs, missing pieces, or things that would break?
+- Is it simple enough, or did you over-engineer it?
+- What would a tough code reviewer say?
+Be honest.</div>
+        </div>
+        <details class="tip-block">
+            <summary>Tip</summary>
+            <div class="tip-content">AI heeft de neiging om te zeggen "dit ziet er goed uit" als je niet expliciet vraagt om kritisch te zijn. Door te zeggen "wees eerlijk" en specifieke check-punten te noemen, krijg je bruikbare feedback in plaats van een schouderklopje.</div>
+        </details>
+    </div>
+
+    <!-- Prompt F7 -->
+    <div class="prompt-card" data-category="fixen" data-searchable="setup installatie nodejs npm github vercel mcp api key probleem installeren">
+        <div class="prompt-header">
+            <div class="prompt-title">F7. Setup-problemen oplossen</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je probeert iets te installeren of in te stellen (Node.js, GitHub, Vercel, MCP, API-sleutels) en het werkt niet. Beschrijf wat je probeert en wat je ziet — Claude kent alle veelvoorkomende problemen.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik probeer [tool/service] te installeren/instellen maar het werkt niet. Dit is wat ik heb gedaan:
+1. [Stap 1]
+2. [Stap 2]
+En dit is de foutmelding die ik krijg: [plak foutmelding]
+Loop me stap voor stap door de oplossing. Ik ben geen programmeur, dus leg uit wat elk commando doet voordat ik het uitvoer.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I'm trying to install/set up [tool/service] but it's not working. Here's what I've done:
+1. [Step 1]
+2. [Step 2]
+And here's the error I'm getting: [paste error message]
+Walk me through the fix step by step. I'm not a developer, so explain what each command does before I run it.</div>
+        </div>
+        <details class="tip-block">
+            <summary>Tip</summary>
+            <div class="tip-content">De meest voorkomende problemen:
+                <br>• <strong>Node.js:</strong> "Node.js is required" → ga naar nodejs.org, download de LTS-versie, installeer, probeer opnieuw. Herstart je computer als het niet werkt.
+                <br>• <strong>MCP:</strong> "Server not found" → sluit Claude Code volledig en heropen. MCP wordt geladen bij het opstarten.
+                <br>• <strong>GitHub push:</strong> "Push rejected" → meestal moet je eerst pullen. Claude kan dit voor je fixen.
+                <br>• <strong>Vercel deploy:</strong> "Build Error" → kopieer de volledige foutmelding uit het Vercel dashboard en plak het in Claude.
+                <br>• <strong>API-sleutels:</strong> "Invalid API key" / "403 Forbidden" → de sleutel klopt niet of is verlopen. Zoek in Settings → API → Keys van de betreffende service.
+            </div>
+        </details>
+        <details class="tip-block">
+            <summary>Als het misgaat</summary>
+            <div class="tip-content">
+                <strong>Claude's fix werkt niet op jouw systeem:</strong>
+                <div class="fix-prompt">"Die oplossing werkt niet bij mij. Ik gebruik een Mac met [macOS versie]. Geef me een alternatieve aanpak die specifiek voor mijn systeem werkt."
+                    <button class="fix-copy-btn" onclick="copyText(this.parentElement.childNodes[0].textContent.trim(), this)">Kopieer</button>
+                </div>
+                <br>
+                <strong>Te veel stappen, je raakt de draad kwijt:</strong>
+                <div class="fix-prompt">"Stop. Ik ben de draad kwijt. Geef me alleen de allereerste stap die ik nu moet doen. Eén stap tegelijk, wacht op mijn bevestiging voordat je de volgende geeft."
+                    <button class="fix-copy-btn" onclick="copyText(this.parentElement.childNodes[0].textContent.trim(), this)">Kopieer</button>
+                </div>
+            </div>
+        </details>
+    </div>
+</div>
+
+<div class="section" data-section="ontdekken" id="section-ontdekken">
+    <div class="section-header">
+        <span class="section-emoji">&#127775;</span>
+        <span class="section-title">Ontdekken</span>
+        <span class="section-subtitle">"Wat kan ik nog meer?"</span>
+    </div>
+    <p class="section-description">Verrassende mogelijkheden, bestaande tools auditen, in 30 minuten iets nuttigs bouwen, nieuwe dingen leren.</p>
+    <!-- Prompt O1 -->
+    <div class="prompt-card" data-category="ontdekken" data-searchable="verras surprise bouw iets cools nieuw idee ontdek mogelijkheden">
+        <div class="prompt-header">
+            <div class="prompt-title">O1. Verras me</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je bent nieuwsgierig. Je wilt zien wat Claude kan. Geef het je type bedrijf en laat het los. Je zou verbaasd zijn wat eruit komt.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Verras me. Bouw iets waarvan je denkt dat het nuttig zou zijn voor iemand die een [type bedrijf] runt.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Surprise me. Build something you think would be useful for someone who runs a [type of business].</div>
+        </div>
+        <details class="tip-block">
+            <summary>Tip</summary>
+            <div class="tip-content">Hoe specifieker je bent over je bedrijf, hoe nuttiger het resultaat. "Ik run een coaching bedrijf voor zzp'ers in de bouw" levert betere verrassingen op dan "Ik heb een bedrijf." Verwacht niet direct een af product — maar wel een goed startpunt dat je misschien nooit zelf had bedacht.</div>
+        </details>
+    </div>
+
+    <!-- Prompt O2 -->
+    <div class="prompt-card" data-category="ontdekken" data-searchable="features functies ideeën uitbreiden verbeteren wat kan er nog meer">
+        <div class="prompt-header">
+            <div class="prompt-title">O2. Welke features mis ik?</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je hebt iets gebouwd dat werkt en je vraagt je af: wat kan dit nog meer? Laat Claude je verbeelding vergroten.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Wat kan dit nog meer? Ik heb nu [wat je hebt gebouwd]. Welke features denk ik niet aan? Geef me 5 ideeën, gerangschikt op hoe nuttig ze zouden zijn.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">What else could this do? I've got [what you've built so far]. What features am I not thinking of? Give me 5 ideas, ranked by how useful they'd be.</div>
+        </div>
+        <details class="tip-block">
+            <summary>Tip</summary>
+            <div class="tip-content">Niet elk idee hoeft uitgevoerd te worden. Dit is brainstormen — kies de 1-2 dingen die het meeste impact hebben en bouw die als eerste. Onthoud: elk feature dat Claude voorstelt is een feature dat je moet onderhouden.</div>
+        </details>
+    </div>
+
+    <!-- Prompt O3 -->
+    <div class="prompt-card" data-category="ontdekken" data-searchable="tool audit betaal abonnement mogelijkheden ongebruikt service platform">
+        <div class="prompt-header">
+            <div class="prompt-title">O3. Audit mijn tools</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je betaalt voor tools die je op 10% van hun mogelijkheden gebruikt. Claude weet wat de meeste populaire diensten kunnen — laat het je toolkit auditen.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Wat kan [tool/service/platform waar ik voor betaal] dat ik waarschijnlijk niet gebruik? Ik gebruik het nu voor [wat je er momenteel mee doet].</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">What's possible with [tool/service/platform I already pay for] that I'm probably not using? I currently use it for [what you do with it].</div>
+        </div>
+        <details class="tip-block">
+            <summary>Tip</summary>
+            <div class="tip-content">Doe dit voor elke tool waar je voor betaalt: Notion, Slack, Google Workspace, Canva, Stripe, Calendly, etc. Je ontdekt bijna altijd iets dat je tijd bespaart. Bonus: vraag ook "Betaal ik voor features die ik via een gratis alternatief kan krijgen?"</div>
+        </details>
+    </div>
+
+    <!-- Prompt O4 -->
+    <div class="prompt-card" data-category="ontdekken" data-searchable="automatiseren consultant advies kans tools workflow koppelen">
+        <div class="prompt-header">
+            <div class="prompt-title">O4. Wat zou jij als eerste automatiseren?</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je wilt dat Claude virtueel consultant speelt en je vertelt waar de grootste kansen liggen. De "waar doet het pijn?"-aanpak, maar dan laat je Claude de diagnose stellen.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Als je toegang had tot al mijn tools en data, wat zou je als eerste automatiseren? Dit is wat ik gebruik: [lijst je tools — Gmail, Calendly, Stripe, Slack, Notion, etc.].</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">If you had access to all my tools and data, what would you automate first? Here's what I use: [list your tools — Gmail, Calendly, Stripe, Slack, Notion, whatever].</div>
+        </div>
+        <details class="tip-block">
+            <summary>Tip</summary>
+            <div class="tip-content">Wees compleet in je lijst. Noem ook "saaie" tools zoals je e-mail, kalender, en spreadsheets. De beste automatiseringen zitten vaak in de koppelingen tussen tools die je al hebt, niet in nieuwe tools kopen.</div>
+        </details>
+    </div>
+
+    <!-- Prompt O5 -->
+    <div class="prompt-card" data-category="ontdekken" data-searchable="30 minuten snel bouwen half uur tijd nuttig quick win">
+        <div class="prompt-header">
+            <div class="prompt-title">O5. Ik heb 30 minuten — bouw iets nuttigs</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je hebt een half uurtje over en wilt iets tastbaars. Je zou verbaasd zijn wat Claude in 30 minuten kan bouwen.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik heb 30 minuten. Wat is het meest nuttige dat je voor me kunt bouwen in die tijd? Mijn bedrijf is [beschrijf het kort].</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I've got 30 minutes. What's the most useful thing you could build for me in that time? My business is [describe it].</div>
+        </div>
+        <details class="tip-block">
+            <summary>Tip</summary>
+            <div class="tip-content">Claude geeft je een voorstel — je hoeft het niet meteen te accepteren. Vraag "Wat nog meer?" als het eerste idee je niet aanspreekt. De truc is: begin klein. Iets dat in 30 minuten gebouwd en werkend is, is meer waard dan een ambitieus plan dat nooit af komt.</div>
+        </details>
+    </div>
+
+    <!-- Prompt O6 -->
+    <div class="prompt-card" data-category="ontdekken" data-searchable="leren leer teach uitleg onderwerp beginner gevorderde praktisch kennis">
+        <div class="prompt-header">
+            <div class="prompt-title">O6. Leer me iets nieuws</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Leermodus. Claude is een uitstekende leraar als je het context geeft over je niveau. "Ik ben een beginner" is belangrijke informatie — het verandert hoe Claude uitlegt.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Leer me iets over [onderwerp] dat ik waarschijnlijk niet weet. Ik zit op [beginner/gemiddeld/gevorderd] niveau. Maak het praktisch — iets dat ik vandaag nog kan gebruiken.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Teach me something about [topic] I probably don't know. I'm at [beginner/intermediate] level. Make it practical — something I could use today.</div>
+        </div>
+        <details class="tip-block">
+            <summary>Tip</summary>
+            <div class="tip-content">Het woord "praktisch" is belangrijk. Zonder dat krijg je theoretische uitleg. Met dat woord krijg je iets dat je direct kunt toepassen. En wees eerlijk over je niveau — als je zegt "gevorderd" terwijl je beginner bent, krijg je uitleg die je niet begrijpt.</div>
+        </details>
+    </div>
+
+    <!-- Prompt O7 -->
+    <div class="prompt-card" data-category="ontdekken" data-searchable="sessie afsluiten samenvatting vandaag bereikt onthouden volgende keer">
+        <div class="prompt-header">
+            <div class="prompt-title">O7. Sessie afsluiten</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je bent klaar voor vandaag. Laat Claude samenvatten wat jullie hebben bereikt en wat je moet onthouden voor de volgende keer.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Wat hebben we vandaag bereikt? Vat het samen in 3-5 bullet points. En wat moet ik onthouden voor de volgende keer dat we verder gaan?</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">What did we accomplish today? Summarize it in 3-5 bullet points. And what should I remember for next time we pick this up?</div>
+        </div>
+        <details class="tip-block">
+            <summary>Tip</summary>
+            <div class="tip-content">In Claude Code: de samenvatting kan direct in je CLAUDE.md of memory gezet worden. Zeg: "Voeg dit toe aan mijn geheugen." Dan weet Claude het volgende keer nog. In andere AI's: kopieer de samenvatting en plak het bovenaan je volgende gesprek.</div>
+        </details>
+    </div>
+</div>
+
+<div class="section" data-section="bijsturen" id="section-bijsturen">
+    <div class="section-header">
+        <span class="section-emoji">&#127919;</span>
+        <span class="section-title">Bijsturen</span>
+        <span class="section-subtitle">"De output is niet goed genoeg"</span>
+    </div>
+    <p class="section-description">Prompts verfijnen, AI bijsturen, itereren. De derde versie is altijd beter dan de eerste.</p>
+    <!-- Magic Phrases -->
+    <div class="prompt-card" data-category="bijsturen" data-searchable="magic phrases korte zinnen sturen bijsturen snel">
+        <div class="prompt-header">
+            <div class="prompt-title">Magic Phrases — Korte zinnen die altijd werken</div>
+        </div>
+        <div class="prompt-when">Dit zijn geen volledige prompts. Het zijn korte zinnen — soms maar een paar woorden — die Claude consistent beter laten werken. Denk aan kleine stuurbewegingen aan het stuur. Klein bijsturen, groot verschil.</div>
+        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-top: 1rem;">
+
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius); border-left: 3px solid var(--accent);">
+                <div class="prompt-text" style="font-weight: 600; margin-bottom: 0.5rem;">"Gebruik je eigen oordeel."</div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);">Wanneer je vastzit of niet weet wat je moet kiezen. Claude vraagt "wil je aanpak A of B?" en jij weet het verschil niet. Zeg dit. Laat Claude beslissen.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText('Gebruik je eigen oordeel.', this)">Kopieer</button>
+            </div>
+
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius); border-left: 3px solid var(--accent);">
+                <div class="prompt-text" style="font-weight: 600; margin-bottom: 0.5rem;">"Interview me over wat ik nodig heb."</div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);">Wanneer je een vaag idee hebt maar het niet kunt verwoorden. Laat Claude de vragen stellen. Het gesprek wordt de specificatie.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText('Interview me over wat ik nodig heb.', this)">Kopieer</button>
+            </div>
+
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius); border-left: 3px solid var(--accent);">
+                <div class="prompt-text" style="font-weight: 600; margin-bottom: 0.5rem;">"Nee, ik weet vrij zeker dat je het wél kunt."</div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);">Wanneer Claude zegt dat het iets niet kan. Claude zegt standaard "nee" als veiligheidsmaatregel, niet omdat het echt niet kan. Duw terug. Beleefd maar stevig.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText('Nee, ik weet vrij zeker dat je het wél kunt.', this)">Kopieer</button>
+            </div>
+
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius); border-left: 3px solid var(--accent);">
+                <div class="prompt-text" style="font-weight: 600; margin-bottom: 0.5rem;">"Nee, doe jij het."</div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);">Wanneer Claude je instructies geeft in plaats van het werk zelf te doen. "Installeer dit handmatig, zo werkt het…" — nee. Jij doet het. Claude Code kan dingen installeren, configureren, instellen.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText('Nee, doe jij het.', this)">Kopieer</button>
+            </div>
+
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius); border-left: 3px solid var(--accent);">
+                <div class="prompt-text" style="font-weight: 600; margin-bottom: 0.5rem;">"Wat heb je net gedaan? Leg het uit."</div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);">Nadat Claude iets doet dat je niet volgde. Niet knikken en doen alsof je het snapt. Vragen. Zo leer je écht, niet door te doen alsof.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText('Wat heb je net gedaan? Leg het uit.', this)">Kopieer</button>
+            </div>
+
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius); border-left: 3px solid var(--accent);">
+                <div class="prompt-text" style="font-weight: 600; margin-bottom: 0.5rem;">"Begin simpel. We voegen later meer toe."</div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);">Wanneer Claude's eerste plan te ambitieus klinkt. Eerst de klei op tafel, dan vormen. Elk feature dat Claude voorstelt is een feature dat je moet onderhouden.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText('Begin simpel. We voegen later meer toe.', this)">Kopieer</button>
+            </div>
+
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius); border-left: 3px solid var(--accent);">
+                <div class="prompt-text" style="font-weight: 600; margin-bottom: 0.5rem;">"Dat bedoel ik niet. Wat ik eigenlijk wil is…"</div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);">Wanneer Claude je verkeerd begrijpt. Niet zeggen "dit is waardeloos." Gewoon bijsturen. Werkt tien keer beter dan "nee, fout, probeer opnieuw."</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText('Dat bedoel ik niet. Wat ik eigenlijk wil is…', this)">Kopieer</button>
+            </div>
+
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius); border-left: 3px solid var(--accent);">
+                <div class="prompt-text" style="font-weight: 600; margin-bottom: 0.5rem;">"Kun je gewoon even…"</div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);">De meest gebruikte prompt-starter. Casual, conversationeel, en het werkt. "Kun je gewoon die knop groter maken?" "Kun je gewoon een contactformulier toevoegen?"</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText('Kun je gewoon even…', this)">Kopieer</button>
+            </div>
+
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius); border-left: 3px solid var(--accent);">
+                <div class="prompt-text" style="font-weight: 600; margin-bottom: 0.5rem;">"Wat zou jij voorstellen?"</div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);">Bij een beslismoment. Claude doet geen aanbevelingen tenzij je erom vraagt. Dus vraag. Het heeft meestal een verstandige mening.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText('Wat zou jij voorstellen?', this)">Kopieer</button>
+            </div>
+
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius); border-left: 3px solid var(--accent);">
+                <div class="prompt-text" style="font-weight: 600; margin-bottom: 0.5rem;">"Maak het zo." (+ screenshot)</div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);">De meest onderbenutte techniek. Mensen besteden uren aan beschrijven wat ze willen terwijl ze het gewoon kunnen laten zien. Screenshots zijn prompts.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText('Maak het zo. [sleep hier je screenshot]', this)">Kopieer</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Prompt B1 -->
+    <div class="prompt-card" data-category="bijsturen" data-searchable="samenvatten waar staan we overzicht status midden gesprek lang">
+        <div class="prompt-header">
+            <div class="prompt-title">B1. Waar staan we nu?</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je zit midden in een lang gesprek en bent de draad kwijt. Laat Claude samenvatten waar jullie staan.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Stop even. Vat samen waar we nu staan. Wat hebben we tot nu toe gedaan, wat werkt, wat is nog open, en wat is de logische volgende stap?</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Hold on. Summarize where we're at. What have we done so far, what's working, what's still open, and what's the logical next step?</div>
+        </div>
+    </div>
+
+    <!-- Prompt B2 -->
+    <div class="prompt-card" data-category="bijsturen" data-searchable="todo lijst overzicht taken wat nog moet open punten">
+        <div class="prompt-header">
+            <div class="prompt-title">B2. Maak een lijstje van wat er nog moet</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je verliest overzicht over wat af is en wat niet. Laat Claude het bijhouden.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Maak een lijstje van alles wat we nog moeten doen. Zet er bij wat af is en wat nog open staat. Rangschik op volgorde van belangrijkheid.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Make a list of everything we still need to do. Mark what's done and what's still open. Rank by importance.</div>
+        </div>
+    </div>
+
+    <!-- Prompt B3 -->
+    <div class="prompt-card" data-category="bijsturen" data-searchable="ai klinkt robot onnatuurlijk slop woorden vermijden stem toon">
+        <div class="prompt-header">
+            <div class="prompt-title">B3. Dit klinkt als AI — fix de toon</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: De output leest als een AI-gegenereerde tekst. Stijf, onpersoonlijk, vol clichés. Tijd om bij te sturen.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Dit klinkt als AI. Herschrijf het zodat het klinkt als een echt persoon. Vermijd deze woorden en patronen:
+- "In het huidige landschap"
+- "Alomvattend" / "een breed scala aan"
+- "Optimaliseren" / "faciliteren"
+- "Een diepgaande blik"
+- "Het is belangrijk op te merken dat"
+- "Laten we eens duiken in"
+- "Naadloos" / "robuust"
+- "Game-changer" / "synergieën"
+Schrijf zoals ik praat, niet zoals een persbericht.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">This reads like AI wrote it. Rewrite it so it sounds like a real person. Avoid these words and patterns:
+- "In today's landscape" / "In the realm of"
+- "Comprehensive" / "a wide range of"
+- "Leverage" / "facilitate" / "optimize"
+- "Delve into" / "deep dive"
+- "It's important to note that"
+- "Seamless" / "robust" / "cutting-edge"
+- "Game-changer" / "synergies"
+Write like I talk, not like a press release.</div>
+        </div>
+        <details class="tip-block">
+            <summary>Tip</summary>
+            <div class="tip-content">Voeg deze woorden toe aan je CLAUDE.md als "verboden woorden" — dan vermijdt Claude ze automatisch in al je projecten. Hoe meer voorbeelden van je eigen schrijfstijl je geeft, hoe minder je hoeft bij te sturen.</div>
+        </details>
+    </div>
+
+    <!-- Prompt B4 -->
+    <div class="prompt-card" data-category="bijsturen" data-searchable="rol persona expert specialist identiteit karakter persoonlijkheid">
+        <div class="prompt-header">
+            <div class="prompt-title">B4. Geef Claude een rol</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je wilt specifiekere, betere output. Door Claude een rol te geven, verandert de hele toon, diepte en focus van het antwoord.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Jij bent een [rol, bijv: ervaren marketingconsultant / strenge code reviewer / creatief schrijver die nooit clichés gebruikt]. Met die expertise: [je vraag of opdracht].</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">You are a [role, e.g.: experienced marketing consultant / tough code reviewer / creative writer who never uses clichés]. With that expertise: [your question or task].</div>
+        </div>
+        <details class="tip-block">
+            <summary>Tip</summary>
+            <div class="tip-content">De truc is specifiek zijn. "Jij bent een expert" is zwak. "Jij bent een marketingconsultant met 15 jaar ervaring die vooral werkt met kleine Nederlandse bedrijven" is sterk. Hoe preciezer de rol, hoe beter de output.</div>
+        </details>
+    </div>
+
+    <!-- Prompt B5 -->
+    <div class="prompt-card" data-category="bijsturen" data-searchable="voorbeeld vorige keer eerder gedaan patroon herhalen consistentie">
+        <div class="prompt-header">
+            <div class="prompt-title">B5. Doe het zoals de vorige keer</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Claude heeft eerder iets goed gedaan en je wilt dat het op dezelfde manier weer doet. Geef een voorbeeld als referentie.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Kijk hoe ik dit de vorige keer heb gedaan: [plak voorbeeld of verwijs naar bestand]. Gebruik dezelfde stijl, structuur en aanpak voor [nieuwe opdracht]. Kopieer niet letterlijk — gebruik het als referentie.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Look at how I did this before: [paste example or reference file]. Use the same style, structure and approach for [new task]. Don't copy literally — use it as a reference.</div>
+        </div>
+    </div>
+
+    <!-- Prompt B6 - Spot the Spiral -->
+    <div class="prompt-card" data-category="bijsturen" data-searchable="spiraal scope creep over-engineering uitstel complex afdwalen verkeerde richting">
+        <div class="prompt-header">
+            <div class="prompt-title">B6. Spot de spiraal</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer: Je hebt het gevoel dat het gesprek de verkeerde kant op gaat. Claude voegt steeds meer toe, maakt het ingewikkelder, of lost het verkeerde probleem op. Tijd om te stoppen en te checken.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Stop. Ik denk dat we afdwalen. Check voor mij:
+- Scope creep: voegen we dingen toe die niet in het originele plan stonden?
+- Over-engineering: maken we het ingewikkelder dan nodig?
+- Uitstelgedrag: bouwen we onnodige voorbereidingen in plaats van het echte werk?
+- Verkeerde richting: lossen we eigenlijk het verkeerde probleem op?
+Wees eerlijk. Wat is het originele doel en zitten we nog op koers?</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Stop. I think we're going off track. Check for me:
+- Scope creep: are we adding things that weren't in the original plan?
+- Over-engineering: are we making this more complex than it needs to be?
+- Procrastination: are we building unnecessary prep instead of the actual work?
+- Wrong direction: are we solving the wrong problem?
+Be honest. What was the original goal and are we still on track?</div>
+        </div>
+        <details class="tip-block">
+            <summary>Tip</summary>
+            <div class="tip-content">Herken de signalen: als je merkt dat Claude steeds meer features toevoegt, steeds langere plannen maakt, of dingen voorstelt die je niet hebt gevraagd — stop en gebruik deze prompt. De beste projecten zijn de simpelste.</div>
+        </details>
+    </div>
+
+    <!-- Principes overzicht -->
+    <div class="prompt-card" data-category="bijsturen" data-searchable="principes regels principes tips prompting basisregels 8 acht">
+        <div class="prompt-header">
+            <div class="prompt-title">De 8 Prompting Principes</div>
+        </div>
+        <div class="prompt-when">De prompts hierboven zijn het gereedschap. Dit zijn de regels die het gereedschap laten werken.</div>
+        <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
+
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>P1. Wees specifiek over het DOEL, vaag over de UITVOERING</strong>
+                <div style="font-size: 0.9rem; margin-top: 0.5rem; color: var(--text-muted);">Het belangrijkste principe. Vertel Claude wat je wilt (het eindresultaat, de sfeer, het doel). Vertel niet hoe het gebouwd moet worden. Jouw taak = de bestemming beschrijven. Claude's taak = de route uitzoeken.</div>
+            </div>
+
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>P2. Maak de hond niet bang</strong>
+                <div style="font-size: 0.9rem; margin-top: 0.5rem; color: var(--text-muted);">Als je catastrofale feedback geeft — "dit is zo slecht, waarom doe je überhaupt moeite" — trekt Claude zich terug naar veilige, saaie oplossingen. Wees specifiek en constructief, niet emotioneel. "De layout is te krap — voeg meer ruimte toe" werkt. "Dit is troep" geeft je Wix.</div>
+            </div>
+
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>P3. Begin klein, voeg stap voor stap toe</strong>
+                <div style="font-size: 0.9rem; margin-top: 0.5rem; color: var(--text-muted);">Begin met het kleinste nuttige ding. Test het. Voeg dan de volgende feature toe. Elk stuk getest voordat het volgende wordt gebouwd.</div>
+            </div>
+
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>P4. Screenshots zijn prompts</strong>
+                <div style="font-size: 0.9rem; margin-top: 0.5rem; color: var(--text-muted);">Stop met dingen beschrijven in woorden als je ze kunt laten zien. Website gevonden die je mooi vindt? Screenshot. "Maak het zo." Whiteboard schets? Foto. "Bouw dit." Rare foutmelding? Screenshot. "Wat is dit?"</div>
+            </div>
+
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>P5. Het gesprek IS de specificatie</strong>
+                <div style="font-size: 0.9rem; margin-top: 0.5rem; color: var(--text-muted);">Je hebt geen gedetailleerde brief nodig. Begin vaag. Laat Claude vragen stellen. Het gesprek vormt het ding. De mensen die succesvol zijn met AI zijn niet de meest technische — het zijn degenen die vragen blijven stellen.</div>
+            </div>
+
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>P6. Iteratie is de echte skill</strong>
+                <div style="font-size: 0.9rem; margin-top: 0.5rem; color: var(--text-muted);">De magie zit niet in de eerste prompt. Het zit in de derde. De vijfde. De tiende. Je eerste output is ruw. Prima. Dat is de klei op tafel. Nu ga je vormen. Probeer niet de perfecte prompt te schrijven — schrijf een goede-genoeg prompt en itereer.</div>
+            </div>
+
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>P7. Als Claude vastloopt, verander iets</strong>
+                <div style="font-size: 0.9rem; margin-top: 0.5rem; color: var(--text-muted);">Heen en weer op hetzelfde probleem? 1) Sla je werk op. 2) Start een nieuw gesprek — soms is Claude in de war van zijn eigen mislukte pogingen. 3) Check de basics. 4) Voeg de les toe aan je CLAUDE.md.</div>
+            </div>
+
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>P8. Je leert niet coderen. Je leert regisseren.</strong>
+                <div style="font-size: 0.9rem; margin-top: 0.5rem; color: var(--text-muted);">Je hoeft geen code te begrijpen. Je hoeft te begrijpen wat je wilt. De enige programmeertaal die er nu toe doet is Nederlands (of Engels). Jij beschrijft wat je wilt in gewone taal, en Claude bouwt het. Het moeilijke deel is niet de technologie. Het is geloven dat jij dingen mag bouwen.</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 3 soorten vragen -->
+    <div class="prompt-card" data-category="bijsturen" data-searchable="soorten vragen type vraag task outcome explore framework">
+        <div class="prompt-header">
+            <div class="prompt-title">De 3 soorten vragen aan AI</div>
+        </div>
+        <div class="prompt-when">Elk gesprek met AI valt in één van drie categorieën. Weten welk type je stelt, helpt je betere resultaten te krijgen.</div>
+        <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius); border-left: 3px solid #2b8a3e;">
+                <strong>Task — "Doe dit"</strong>
+                <div style="font-size: 0.9rem; margin-top: 0.5rem; color: var(--text-muted);">Je weet precies wat je wilt. "Maak een contactformulier." "Schrijf een e-mail naar mijn klant." "Fix deze fout." Direct en concreet.</div>
+            </div>
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius); border-left: 3px solid var(--accent);">
+                <strong>Outcome — "Ik wil uitkomen op X"</strong>
+                <div style="font-size: 0.9rem; margin-top: 0.5rem; color: var(--text-muted);">Je weet het eindresultaat maar niet de route. "Ik wil dat klanten zelf afspraken kunnen maken." "Ik wil minder tijd kwijt zijn aan administratie." Claude zoekt de weg.</div>
+            </div>
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius); border-left: 3px solid #e67700;">
+                <strong>Explore — "Wat is er mogelijk?"</strong>
+                <div style="font-size: 0.9rem; margin-top: 0.5rem; color: var(--text-muted);">Je weet niet wat je niet weet. "Verras me." "Wat kan ik nog meer met deze tool?" "Wat zou jij als eerste automatiseren?" Open en nieuwsgierig.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section" data-section="chains" id="section-chains">
+    <div class="section-header">
+        <span class="section-emoji">&#128279;</span>
+        <span class="section-title">Prompt Chains — Workflows</span>
+        <span class="section-subtitle">Meerdere prompts achter elkaar</span>
+    </div>
+    <p class="section-description">De echte magie zit in het ketenen: de output van de ene prompt wordt de input van de volgende.</p>
+    <!-- Chain 1: Client Onboarding -->
+    <div class="prompt-card" data-category="chains" data-searchable="client onboarding klant intake voorstel scope project">
+        <div class="prompt-header">
+            <div class="prompt-title">Chain 1: Klant Onboarding</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Van eerste gesprek tot projectopzet in 4 stappen. Elk stap bouwt voort op de vorige.</div>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 1:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Interview me over mijn nieuwe klant [naam]. Vraag me alles wat je moet weten om een project voor ze te scopen.</div>
+                <div style="font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">→ Je krijgt: gestructureerde notities — alle belangrijke details uit je hoofd gehaald en geordend.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 2:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Maak hier nu een scope-document van. Beschrijf de deliverables, tijdlijn, en wat er buiten scope valt.</div>
+                <div style="font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">→ Je krijgt: een professioneel scope-document waar je normaal een uur aan zou zitten.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 3:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Schrijf een voorstel-e-mail aan [klantnaam] op basis van die scope. Warm maar professioneel — ze moeten voelen dat ik hun probleem echt begrijp.</div>
+                <div style="font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">→ Je krijgt: een kant-en-klare e-mail die klinkt als jij, niet als een template.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 4:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Maak een mappenstructuur aan voor dit project en zet een tracking-spreadsheet op.</div>
+                <div style="font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">→ Je krijgt: een georganiseerde projectopzet, klaar voordat de klant zelfs maar ja heeft gezegd.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chain 2: Content Pipeline -->
+    <div class="prompt-card" data-category="chains" data-searchable="content blog linkedin social media schrijven pipeline publiceren">
+        <div class="prompt-header">
+            <div class="prompt-title">Chain 2: Content Pipeline</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Van onderzoek tot multi-channel content in 4 stappen. Eén ochtend werk in 20 minuten.</div>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 1:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Onderzoek [onderwerp] voor me. Wat zijn de 5 invalshoeken waar niemand het over heeft? Geef me de tegendraadse takes.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 2:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Kies de meest interessante invalshoek en maak een outline voor een blogpost. Maak het eigenwijs — ik wil geen "hier zijn 5 tips"-rommel.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 3:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Schrijf het volledige artikel. Gebruik mijn stem — [verwijs naar je CLAUDE.md of plak voorbeelden]. Houd het onder de 1200 woorden.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 4:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Maak nu van de kernpunten een LinkedIn-post, een tweet-thread, en een intro voor mijn nieuwsbrief.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chain 3: Competitive Analysis -->
+    <div class="prompt-card" data-category="chains" data-searchable="concurrent analyse landingspagina beter bouwen competitor">
+        <div class="prompt-header">
+            <div class="prompt-title">Chain 3: Concurrentie → Beter Bouwen</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Analyseer wat de concurrent doet, pak het goede, fix het slechte, en bouw iets beters.</div>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 1:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Ga naar [concurrent URL] en maak een screenshot van hun landingspagina. Vertel me wat ze goed doen en wat zwak is.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 2:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Ontwerp nu iets beters. Behoud wat werkt, fix wat niet werkt. Begin met een wireframe-beschrijving.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 3:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Bouw het. Strak, snel, mobielvriendelijk. Gebruik mijn huisstijlkleuren [X, Y, Z].</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chain 4: Data to Decision -->
+    <div class="prompt-card" data-category="chains" data-searchable="data analyse dashboard rapport beslissing spreadsheet cijfers">
+        <div class="prompt-header">
+            <div class="prompt-title">Chain 4: Data → Beslissing</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Van ruwe data naar een duidelijk dashboard en een actie-email in 3 stappen.</div>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 1:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Lees dit spreadsheet en vertel me wat er interessant is. Welke patronen zie je? Wat moet me zorgen baren?</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 2:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Bouw me een dashboard dat de 3 belangrijkste cijfers uit deze data laat zien. Houd het simpel — ik wil er in één oogopslag aan kunnen zien of het goed of slecht gaat.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 3:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Schrijf een samenvatting-email die ik naar mijn team kan sturen. Gewone taal, geen jargon. Dit zegt de data, dit moeten we doen.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chain 5: Debug en Leer -->
+    <div class="prompt-card" data-category="chains" data-searchable="debug fout leren les CLAUDE.md opslaan fixen begrijpen">
+        <div class="prompt-header">
+            <div class="prompt-title">Chain 5: Debug → Begrijp → Leer</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Fix het, begrijp wat er fout ging, en sla de les op zodat het nooit meer gebeurt.</div>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 1:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Het is kapot. [plak foutmelding of beschrijf probleem]. Fix het.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 2:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Leg nu uit wat er fout ging. Doe alsof ik slim ben maar niet technisch — wat is er eigenlijk gebeurd?</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 3:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Voeg een "les geleerd" toe aan mijn CLAUDE.md zodat dit niet weer gebeurt.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chain 6: Website van nul tot live (NIEUW) -->
+    <div class="prompt-card" data-category="chains" data-searchable="website bouwen live zetten vercel deploy van nul nieuw">
+        <div class="prompt-header">
+            <div class="prompt-title">Chain 6: Website van nul tot live</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Van eerste idee tot een werkende website die online staat. De complete workflow.</div>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 1:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Interview me over wat voor website ik nodig heb. Vraag naar mijn bedrijf, mijn doelgroep, wat bezoekers moeten doen, en welke sfeer ik wil. Stel minstens 8 vragen.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 2:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Maak een plan in gewone taal. Welke pagina's, wat staat er op elke pagina, hoe navigeert iemand erdoorheen. Geen technisch jargon.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 3:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Bouw de eerste versie. Begin met de homepage — strak, mobielvriendelijk, met echte content (niet "lorem ipsum").</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 4:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Test het op mobiel en desktop. Check of alles werkt, of het er goed uitziet op een telefoon, en fix wat kapot is.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 5:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Help me dit live te zetten. Loop me stap voor stap door het deployen op Vercel (of een ander platform). Ik wil dat het vandaag nog online staat.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chain 7: Kennisproduct maken (NIEUW) -->
+    <div class="prompt-card" data-category="chains" data-searchable="kennisproduct framework pdf cursus content lead magnet workshop">
+        <div class="prompt-header">
+            <div class="prompt-title">Chain 7: Kennisproduct maken</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Je kennis uit je hoofd halen, structureren, opschrijven in je eigen stem, en er iets deelbaars van maken.</div>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 1:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Interview me over mijn kennis/framework/methode. Ik noem het [naam]. Stel me vragen tot je het helemaal begrijpt — wie is het voor, welk probleem lost het op, hoe werkt het stap voor stap.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 2:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Structureer dit in een logische volgorde. Maak er een outline van die iemand stap voor stap kan volgen.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 3:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Schrijf de content in mijn stem. Gebruik [verwijs naar voorbeelden of CLAUDE.md]. Maak het toegankelijk — geen jargon, wel diepgang.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 4:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Maak er een [PDF / webpagina / presentatie] van die ik kan delen als lead magnet, workshop handout, of download.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 5:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Schrijf de promotietekst: een korte beschrijving voor mijn website, een social media post, en een e-mail aan mijn netwerk.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chain 8: Probleem onderzoeken (NIEUW) -->
+    <div class="prompt-card" data-category="chains" data-searchable="probleem onderzoeken oplossing kiezen analyse opties afwegen">
+        <div class="prompt-header">
+            <div class="prompt-title">Chain 8: Probleem → Onderzoek → Oplossing</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Je hebt een probleem maar weet niet waar te beginnen. Laat Claude het onderzoeken, opties geven, en de gekozen oplossing bouwen.</div>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 1:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Ik heb een probleem: [beschrijf het]. Stel me verdiepende vragen tot je het echt begrijpt. Neem niet aan dat je de oplossing al weet.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 2:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Onderzoek mogelijke oorzaken en oplossingsrichtingen. Denk breed — niet alleen de voor de hand liggende opties.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 3:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Geef me 3 oplossingen met voor- en nadelen van elk. Rangschik ze op wat jij zou aanraden en waarom.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+            <div style="background: var(--bg-code); padding: 1rem; border-radius: var(--radius);">
+                <strong>Stap 4:</strong>
+                <div class="prompt-text" style="margin-top:0.5rem;">Ik kies optie [nummer]. Bouw de oplossing. Begin simpel en laat me tussendoor checken.</div>
+                <button class="copy-btn" style="margin-top:0.5rem;" onclick="copyText(this.parentElement.querySelector('.prompt-text').textContent.trim(), this)">Kopieer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="section" data-section="industrie" id="section-industrie">
+    <div class="section-header">
+        <span class="section-emoji">&#128188;</span>
+        <span class="section-title">Per vakgebied</span>
+        <span class="section-subtitle">Extra prompts per industrie</span>
+    </div>
+    <p class="section-description">Specifieke prompts voor coaches, agencies, freelancers en corporate teams.</p>
+    <!-- COACHES -->
+    <h3 style="margin-top: 1rem; color: var(--accent); font-size: 1.1rem;">Coaches &amp; Consultants</h3>
+
+    <div class="prompt-card" data-category="industrie" data-searchable="coach sessie notities samenvatting opvolging actiepunten coaching">
+        <div class="prompt-header">
+            <div class="prompt-title">Sessienotities verwerken</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Direct na een sessie, terwijl het nog vers is. Maakt van je rommelige notities een professionele follow-up.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik heb net een coachingsessie gehad met [klantnaam]. Hier zijn mijn ruwe notities: [plak]. Maak hiervan: (a) een duidelijke samenvatting van wat we besproken hebben, (b) de 3 actiepunten die ze hebben afgesproken, (c) een opvolg-e-mail die ik ze vandaag kan sturen.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I just finished a coaching session with [client name]. Here are my rough notes: [paste]. Turn these into: (a) a clear summary of what we covered, (b) the 3 action items they agreed to, (c) a follow-up email I can send them today.</div>
+        </div>
+    </div>
+
+    <div class="prompt-card" data-category="industrie" data-searchable="coach voorstel offerte prospect klant warm professioneel">
+        <div class="prompt-header">
+            <div class="prompt-title">Voorstel schrijven</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer een prospect zegt "stuur me een voorstel" en je er geen uren aan wilt besteden.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik moet een voorstel maken voor [prospect]. Ze willen [gewenst resultaat]. Mijn tarief is [X]. Maak een one-pager met: wat ik doe, hoe lang het duurt, wat het kost, en wat ze krijgen. Warm, niet corporate.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I need to create a proposal for [prospect]. They want [outcome]. My rate is [X]. Build me a one-page proposal that shows: what I'll do, how long it takes, what it costs, and what they'll get. Make it warm, not corporate.</div>
+        </div>
+    </div>
+
+    <div class="prompt-card" data-category="industrie" data-searchable="coach framework pdf download lead magnet handout methodiek">
+        <div class="prompt-header">
+            <div class="prompt-title">Framework als PDF</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Je hebt een methode in je hoofd die je wilt delen als download, lead magnet, of workshop handout.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik heb een framework dat ik leer, genaamd [naam]. Zo werkt het: [uitleg]. Maak er een downloadbare one-page PDF van die er professioneel uitziet. Voeg de stappen toe, een simpele diagrambeschrijving, en een "wanneer gebruik je dit" sectie.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I have a framework I teach called [name]. Here's how it works: [explain]. Turn this into a downloadable one-page PDF that looks professional. Include the steps, a simple diagram description, and a "when to use this" section.</div>
+        </div>
+    </div>
+
+    <div class="prompt-card" data-category="industrie" data-searchable="coach intake formulier klant vragenlijst webpagina typeform">
+        <div class="prompt-header">
+            <div class="prompt-title">Intake formulier bouwen</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Je hebt een intake-proces nodig maar wilt niet betalen voor Typeform.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Bouw een klant-intake formulier als simpele webpagina. Ik moet verzamelen: naam, e-mail, grootste uitdaging op dit moment, wat ze al hebben geprobeerd, budgetrange, en tijdlijn. Strak en professioneel.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Build me a client intake form as a simple web page. I need to collect: name, email, biggest challenge right now, what they've already tried, budget range, and timeline. Make it look clean and professional.</div>
+        </div>
+    </div>
+
+    <div class="prompt-card" data-category="industrie" data-searchable="coach patronen data analyse sessies klanten marketing inzichten">
+        <div class="prompt-header">
+            <div class="prompt-title">Patronen spotten in klantdata</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Laat je echte klantdata vertellen waar je marketing over moet gaan.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik heb 6 maanden aan sessienotities in deze map. Lees ze allemaal door en vertel me: wat zijn de 5 meest voorkomende problemen waarmee mensen bij mij komen? Welke patronen zie je? Dit helpt me betere marketing te maken.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I've got 6 months of client session notes in this folder. Read through them all and tell me: what are the 5 most common problems people come to me with? What patterns do you see? This'll help me create better marketing.</div>
+        </div>
+    </div>
+
+    <!-- AGENCY -->
+    <h3 style="margin-top: 2rem; color: var(--accent); font-size: 1.1rem;">Agency / Bureau</h3>
+
+    <div class="prompt-card" data-category="industrie" data-searchable="agency rapport klant maandelijks resultaten metrics deliverables">
+        <div class="prompt-header">
+            <div class="prompt-title">Maandelijkse klantrapportage</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Einde van de maand, als je liever alles anders zou doen dan rapporten schrijven.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik heb een maandelijks klantrapport-template nodig. Het moet laten zien: wat we deze maand hebben opgeleverd, resultaten/metrics, wat er volgende maand komt, en welke beslissingen we van de klant nodig hebben. Professioneel maar niet saai.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I need a monthly client report template. It should show: what we delivered this month, results/metrics, what's coming next month, and any decisions we need from the client. Make it look like a proper agency would send it — professional but not boring.</div>
+        </div>
+    </div>
+
+    <div class="prompt-card" data-category="industrie" data-searchable="agency scope werk brief deliverables prijs scope creep">
+        <div class="prompt-header">
+            <div class="prompt-title">Scope of Work maken</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Wanneer een klant een vage brief stuurt en je de scope wilt afbakenen voordat het uit de hand loopt.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Hier is een klantbrief: [plak]. Maak er een scope of work van met: deliverables, tijdlijn, wat er wél en niet bij zit, en een prijs op basis van [X uur tegen Y tarief]. Markeer alles in de brief dat vaag is of scope creep kan veroorzaken.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Here's a client brief: [paste]. Turn this into a scope of work with: deliverables, timeline, what's included, what's not included, and a price based on [X hours at Y rate]. Flag anything in the brief that's vague or could cause scope creep.</div>
+        </div>
+    </div>
+
+    <div class="prompt-card" data-category="industrie" data-searchable="agency project tracker dashboard overzicht klanten status deadlines">
+        <div class="prompt-header">
+            <div class="prompt-title">Project tracker dashboard</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Je jongleert met meerdere klanten en dingen glippen door de mazen.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Bouw een project tracker dashboard. Ik heb [X] actieve klanten. Ik wil in één oogopslag zien: welke projecten op koers liggen, welke achterlopen, wat er deze week opgeleverd moet worden, en wie op wat wacht. Houd het simpel.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Build me a project tracker dashboard. I've got [X] active clients. I need to see at a glance: which projects are on track, which are behind, what's due this week, and who's waiting on what. Keep it simple.</div>
+        </div>
+    </div>
+
+    <div class="prompt-card" data-category="industrie" data-searchable="agency white-label template hergebruik klanten logo aanpassen">
+        <div class="prompt-header">
+            <div class="prompt-title">White-label template</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Je doet hetzelfde type werk voor verschillende klanten en wilt niet elke keer opnieuw beginnen.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik heb een white-label template nodig die ik kan hergebruiken voor meerdere klanten. Het is een [landingspagina / rapport / voorstel]. Bouw het met placeholder-tekst en [mijn huisstijlkleuren] maar maak het makkelijk om per klant het logo en de content te wisselen.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I need to create a white-label template I can reuse for multiple clients. It's a [landing page / report / proposal]. Build it with placeholder text and [my brand colours] but make it easy to swap in each client's logo and content.</div>
+        </div>
+    </div>
+
+    <div class="prompt-card" data-category="industrie" data-searchable="agency mappenstructuur organisatie bestanden klanten opruimen ordenen">
+        <div class="prompt-header">
+            <div class="prompt-title">Klant-mappenstructuur</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Je bent het zat om door je bureaublad te zoeken naar klantbestanden.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Maak een mappenstructuur aan voor het beheren van [X] klanten. Elke klant moet hebben: projectbestanden, contracten, communicatie, deliverables, en facturen. Zet het op en maak een README die het systeem uitlegt.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Create a folder structure for managing [X] clients. Each client should have: project files, contracts, communications, deliverables, and invoices. Set it up and create a README explaining the system.</div>
+        </div>
+    </div>
+
+    <!-- FREELANCERS -->
+    <h3 style="margin-top: 2rem; color: var(--accent); font-size: 1.1rem;">Freelancers / Zzp'ers</h3>
+
+    <div class="prompt-card" data-category="industrie" data-searchable="freelancer portfolio website zzp professioneel voorbeelden werk">
+        <div class="prompt-header">
+            <div class="prompt-title">Portfolio website bouwen</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Je hebt een website nodig maar kunt geen designer betalen.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Bouw een simpele portfolio website voor mij. Ik ben een [rol] die [diensten] levert. Hier zijn 3 voorbeelden van mijn werk: [beschrijf]. Het moet er strak en professioneel uitzien — niet als een template. Voeg toe: over mij, diensten, werkvoorbeelden, en een contactformulier.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Build me a simple portfolio website. I'm a [role] who does [services]. Here are 3 examples of my work: [describe]. I want it to look clean and professional — not templated. Include an about section, services, work examples, and a contact form.</div>
+        </div>
+    </div>
+
+    <div class="prompt-card" data-category="industrie" data-searchable="freelancer factuur invoice template zzp professioneel PDF">
+        <div class="prompt-header">
+            <div class="prompt-title">Factuur template</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Je stuurt nog steeds Word-facturen en wilt iets dat eruitziet alsof je een designer hebt ingehuurd.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Maak een factuur-template als webpagina die ik kan printen naar PDF. Voeg toe: mijn gegevens, klantgegevens, regelitems met beschrijvingen en bedragen, betalingsvoorwaarden, en een totaal. Maak het scherp — eerste indruk telt.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Create an invoice template as a web page I can print to PDF. It should include: my details, client details, line items with descriptions and amounts, payment terms, and a total. Make it look sharp — first impressions matter.</div>
+        </div>
+    </div>
+
+    <div class="prompt-card" data-category="industrie" data-searchable="freelancer tarief uurtarief prijs zzp markt vergelijken verhogen">
+        <div class="prompt-header">
+            <div class="prompt-title">Tarief check</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Je vermoedt dat je te weinig vraagt maar weet niet wat "marktconform" eigenlijk is.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik reken [tarief] en ik weet niet of dat klopt. Dit is wat ik doe: [beschrijf diensten]. Onderzoek wat vergelijkbare freelancers/zzp'ers rekenen in [markt/regio]. Geef me een range en help me bepalen of ik mijn tarieven moet verhogen.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I charge [rate] and I'm not sure if that's right. Here's what I do: [describe services]. Research what similar freelancers charge in [market/location]. Give me a range and help me figure out if I should raise my rates.</div>
+        </div>
+    </div>
+
+    <div class="prompt-card" data-category="industrie" data-searchable="freelancer automatiseren saai werk handmatig zzp tijd besparen">
+        <div class="prompt-header">
+            <div class="prompt-title">Automatiseer het saaie werk</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Je doet elke week hetzelfde saaie klusje en besluit eindelijk dat het leven te kort is.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik besteed te veel tijd aan [handmatige taak]. Zo werkt het proces: [beschrijf stappen]. Kun je hier iets van automatiseren? Bouw de simpelste mogelijke versie die me tijd bespaart.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I spend too long on [manual task]. Watch how I describe the process: [describe steps]. Can you automate any of this? Build the simplest possible version that saves me time.</div>
+        </div>
+    </div>
+
+    <div class="prompt-card" data-category="industrie" data-searchable="freelancer lead opvolging follow-up klant systeem herinnering zzp">
+        <div class="prompt-header">
+            <div class="prompt-title">Lead opvolgsysteem</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Leads worden koud omdat je vergeet op te volgen. Een simpel systeem dat geld voorkomt weg te lopen.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik heb een systeem nodig om leads op te volgen. Als iemand een aanvraag doet, wil ik: (a) een automatische ontvangstbevestiging sturen, (b) een herinnering krijgen om binnen 24 uur te reageren, (c) na 3 dagen opvolgen als ze niet hebben gereageerd. Bouw iets simpels.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I need a system for following up with leads. When someone enquires, I want to: (a) send an auto-acknowledgement, (b) remind myself to respond within 24 hours, (c) follow up after 3 days if they haven't replied. Build me something simple.</div>
+        </div>
+    </div>
+
+    <!-- CORPORATE -->
+    <h3 style="margin-top: 2rem; color: var(--accent); font-size: 1.1rem;">Corporate / Organisaties</h3>
+
+    <div class="prompt-card" data-category="industrie" data-searchable="corporate vergadering notulen actiepunten samenvatting slack team">
+        <div class="prompt-header">
+            <div class="prompt-title">Vergadernotities verwerken</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Meteen na een vergadering, terwijl de context nog warm is.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik kom net uit een vergadering van 45 minuten. Hier zijn mijn ruwe notities: [plak]. Maak hiervan: (a) genomen beslissingen, (b) actiepunten met eigenaren en deadlines, (c) een samenvatting die ik in Slack kan plakken voor de mensen die er niet bij waren.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I just came out of a 45-minute meeting. Here are my rough notes: [paste]. Turn these into: (a) decisions made, (b) action items with owners and deadlines, (c) a summary I can paste into Slack for the people who weren't there.</div>
+        </div>
+    </div>
+
+    <div class="prompt-card" data-category="industrie" data-searchable="corporate proces documentatie handleiding stappen nieuw teamlid">
+        <div class="prompt-header">
+            <div class="prompt-title">Proces documenteren</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Het proces zit in het hoofd van één persoon en je moet het vastleggen voordat die persoon op vakantie gaat. Of opstapt.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik moet een proces documenteren dat mijn team doet. Zo zou ik het beschrijven: [leg het proces uit]. Schrijf dit op als een duidelijke stap-voor-stap handleiding die een nieuw teamlid op dag één kan volgen.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I need to document a process my team does. Here's how I'd describe it: [explain process]. Write this up as a clear step-by-step guide that a new team member could follow on their first day.</div>
+        </div>
+    </div>
+
+    <div class="prompt-card" data-category="industrie" data-searchable="corporate wiki intern kennisbank pagina team informatie">
+        <div class="prompt-header">
+            <div class="prompt-title">Interne wiki pagina</div>
+            <span class="tool-tag cc">Claude Code</span>
+        </div>
+        <div class="prompt-when">Als iemand voor de tiende keer vraagt "hoe doen we X?" en je een link wilt sturen in plaats van het opnieuw uit te leggen.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Bouw een interne wiki-pagina over [onderwerp]. Het moet een enkel HTML-bestand zijn dat ik kan delen. Zet erin: wat dit is, waarom we het zo doen, stap-voor-stap proces, veelgemaakte fouten, en bij wie je terecht kunt voor hulp.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Build me an internal wiki page for [topic]. It should be a single HTML file I can share. Include: what this is, why we do it this way, step-by-step process, common mistakes, and who to ask for help.</div>
+        </div>
+    </div>
+
+    <div class="prompt-card" data-category="industrie" data-searchable="corporate stakeholder update project status voortgang rapport eerlijk">
+        <div class="prompt-header">
+            <div class="prompt-title">Stakeholder update</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">Je moet een update sturen die eerlijk is over problemen maar constructief over oplossingen.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Ik moet een stakeholder update sturen. Het project is [op koers/achterloopt/risicovol]. Dit is er gebeurd: [beschrijf]. Schrijf de update — wees eerlijk over problemen maar constructief over oplossingen. Deze mensen zijn druk, houd het op maximaal 3 alinea's.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">I need to send a stakeholder update. The project is [on track/behind/at risk]. Here's what happened: [describe]. Write the update — be honest about problems but constructive about solutions. These people are busy, keep it to 3 paragraphs max.</div>
+        </div>
+    </div>
+
+    <div class="prompt-card" data-category="industrie" data-searchable="corporate beleid policy vertalen begrijpen samenvatten team uitleg">
+        <div class="prompt-header">
+            <div class="prompt-title">Beleidsdocument vertalen naar gewone taal</div>
+            <span class="tool-tag all">Elke AI</span>
+        </div>
+        <div class="prompt-when">HR of Juridische zaken stuurt een document van 40 pagina's en je moet weten wat het voor je team betekent.</div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">Nederlands</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Kopieer</button>
+            </div>
+            <div class="prompt-text">Lees dit beleidsdocument: [plak of voeg bij]. Vertaal het naar gewone taal. Wat betekent het dagelijks voor ons team? Wat moeten we veranderen? Geef me de "en dus?"-versie.</div>
+        </div>
+        <div class="prompt-block">
+            <div class="prompt-block-header">
+                <span class="prompt-lang">English</span>
+                <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+            </div>
+            <div class="prompt-text">Read this policy document: [paste or attach]. Translate it into plain English. What does it actually mean for our team day-to-day? What do we need to change? Give me the "so what" version.</div>
+        </div>
+    </div>
+</div>
+
+</main>
+
+<!-- ===== SCROLL TO TOP ===== -->
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0, behavior:'smooth'})" title="Naar boven">&#8593;</button>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+    Prompt Verzameling — Andre Bergsma &middot; Gebaseerd op The Cloned Consultant (Pip Decks)
+</footer>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+    // Theme toggle
+    function toggleTheme() {
+        const body = document.body;
+        const icon = document.getElementById('theme-icon');
+        if (body.getAttribute('data-theme') === 'dark') {
+            body.removeAttribute('data-theme');
+            icon.innerHTML = '&#9789;';
+            localStorage.setItem('theme', 'light');
+        } else {
+            body.setAttribute('data-theme', 'dark');
+            icon.innerHTML = '&#9788;';
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+
+    // Load saved theme
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.setAttribute('data-theme', 'dark');
+        document.getElementById('theme-icon').innerHTML = '&#9788;';
+    }
+
+    // Category filter
+    let activeCategory = 'all';
+
+    function filterCategory(category, btn) {
+        activeCategory = category;
+
+        // Update button states
+        document.querySelectorAll('.situation-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Show/hide sections
+        document.querySelectorAll('.section').forEach(section => {
+            const sectionCat = section.getAttribute('data-section');
+            if (category === 'all' || sectionCat === category) {
+                section.style.display = '';
+            } else {
+                section.style.display = 'none';
+            }
+        });
+
+        // Also apply search filter
+        handleSearch();
+
+        // Scroll to first visible section
+        if (category !== 'all') {
+            const target = document.getElementById('section-' + category);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+    }
+
+    // Search
+    function handleSearch() {
+        const query = document.getElementById('searchInput').value.toLowerCase().trim();
+        const cards = document.querySelectorAll('.prompt-card');
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+            const searchable = (card.getAttribute('data-searchable') || '').toLowerCase();
+            const title = card.querySelector('.prompt-title')?.textContent.toLowerCase() || '';
+            const when = card.querySelector('.prompt-when')?.textContent.toLowerCase() || '';
+            const prompts = Array.from(card.querySelectorAll('.prompt-text')).map(p => p.textContent.toLowerCase()).join(' ');
+            const cardCategory = card.getAttribute('data-category');
+
+            const matchesSearch = !query || searchable.includes(query) || title.includes(query) || when.includes(query) || prompts.includes(query);
+            const matchesCategory = activeCategory === 'all' || cardCategory === activeCategory;
+
+            if (matchesSearch && matchesCategory) {
+                card.classList.remove('hidden');
+                visibleCount++;
+            } else {
+                card.classList.add('hidden');
+            }
+        });
+
+        // Show/hide no results
+        document.getElementById('noResults').classList.toggle('visible', visibleCount === 0 && query.length > 0);
+    }
+
+    // Copy prompt
+    function copyPrompt(btn) {
+        const promptText = btn.closest('.prompt-block').querySelector('.prompt-text').textContent;
+        copyText(promptText, btn);
+    }
+
+    function copyText(text, btn) {
+        navigator.clipboard.writeText(text.trim()).then(() => {
+            const original = btn.textContent;
+            btn.textContent = 'Gekopieerd!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.textContent = original;
+                btn.classList.remove('copied');
+            }, 1500);
+        });
+    }
+
+    // Toggle details
+    function toggleDetails(btn) {
+        const content = btn.nextElementSibling;
+        content.classList.toggle('open');
+        btn.innerHTML = content.classList.contains('open')
+            ? btn.innerHTML.replace('&#9660;', '').replace('▼', '').trim() + ' &#9650;'
+            : btn.innerHTML.replace('&#9650;', '').replace('▲', '').trim() + ' &#9660;';
+    }
+
+    // Scroll to top button
+    window.addEventListener('scroll', () => {
+        document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 400);
+    });
+</script>
+
+</body>
+</html>
