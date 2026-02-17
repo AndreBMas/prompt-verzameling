@@ -35,8 +35,9 @@ André Bergsma — Massoeba
 ## Bestandsstructuur
 ```
 prompt-verzameling/
-├── index.html          <- De volledige pagina (CSS + JS + content)
-├── CLAUDE.md           <- Dit bestand
+├── index.html              <- Prompt Verzameling pagina (CSS + JS + content)
+├── ai-cheatsheet.html      <- AI Cheat Sheet (printbare A4 referentiekaart)
+├── CLAUDE.md               <- Dit bestand
 └── .gitignore
 ```
 
@@ -91,9 +92,19 @@ prompt-verzameling/
 - Data-attributes: `data-category` voor filters, `data-searchable` voor zoektrefwoorden
 - Tool-tags: `<span class="tool-tag cc">Claude Code</span>` of `<span class="tool-tag all">Elke AI</span>`
 
+## AI Cheat Sheet (ai-cheatsheet.html)
+- Standalone printbare A4 referentiekaart
+- Gebaseerd op "The Cloned Consultant" bonussen (Pip Decks cursus)
+- Twee kolommen: links 4 stappen + 10 magische zinnen, rechts 8 gekleurde tip-boxen
+- Massoeba huisstijl (kleuren, fonts, tone of voice)
+- Standalone HTML met embedded CSS, geen JS (behalve print-knop)
+- Google Fonts: Plus Jakarta Sans + Inter
+- Print-optimalisatie: `@page { size: A4 }`, `print-color-adjust: exact`
+- Status: bijna klaar, laatste finetuning op A4-fitting
+
 ## Nog te doen
-- [ ] Review: samen content doorlopen en checken
+- [ ] Review: samen prompt-verzameling content doorlopen en checken
+- [ ] AI Cheat Sheet: laatste finetuning A4-fitting
 - [ ] Beginners-versie maken (apart product, later)
 - [ ] Subdomein prompts.massoeba.nl koppelen (DNS Cloud86 + Vercel)
 - [ ] Eventueel linken vanuit massoeba.nl of workshop-materiaal
-- [ ] ai-cheatsheet.html verplaatsen naar massoeba-site (hoort hier niet)
